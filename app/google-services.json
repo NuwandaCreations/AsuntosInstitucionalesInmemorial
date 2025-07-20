@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "744950166062",
+    "project_id": "inmemorialdelrey-cd8e7",
+    "storage_bucket": "inmemorialdelrey-cd8e7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:744950166062:android:1cc8eae30d463632e265bf",
+        "android_client_info": {
+          "package_name": "com.example.asuntosinstitucionalesinmemorial"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMvKcAlT0XjzVlZOLc-GTUY9Br5MgQKLU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
