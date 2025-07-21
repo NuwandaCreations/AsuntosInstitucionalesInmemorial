@@ -15,6 +15,8 @@ googleServices = "4.4.2"
 googleKotlinKsp = "2.0.21-1.0.25"
 firebaseCrashlytics = "3.0.2"
 retrofit = "2.9.0"
+koin-android-version = "4.1.0"
+koin-version = "4.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +43,10 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-storage = { module = "com.google.firebase:firebase-storage-ktx" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin-android-version" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-version" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin-version" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
