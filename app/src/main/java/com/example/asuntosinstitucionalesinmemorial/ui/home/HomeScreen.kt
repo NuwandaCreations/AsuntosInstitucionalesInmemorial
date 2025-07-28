@@ -1,6 +1,5 @@
-package com.example.asuntosinstitucionalesinmemorial.view.home
+package com.example.asuntosinstitucionalesinmemorial.ui.home
 
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
@@ -9,15 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.asuntosinstitucionalesinmemorial.di.provideRetrofit
-import com.example.asuntosinstitucionalesinmemorial.view.core.network.GoogleDriveService
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun HomeScreen(homeViewModel: HomeViewModel = viewModel(), navigateToProtocolStorage: () -> Unit) {
+fun HomeScreen(homeViewModel: HomeViewModel = koinViewModel(), navigateToProtocolStorage: () -> Unit) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     homeViewModel.onIsLoadingChanged(true)
-    homeViewModel.downloadDriveFile()
     Scaffold() { padding ->
         Button(
             onClick = {
