@@ -1,4 +1,4 @@
-package com.example.asuntosinstitucionalesinmemorial.view.core.navigation
+package com.example.asuntosinstitucionalesinmemorial.ui.core.navigation
 
 import kotlinx.serialization.Serializable
 

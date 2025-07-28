@@ -1,9 +1,9 @@
-package com.example.asuntosinstitucionalesinmemorial.data
+package com.example.asuntosinstitucionalesinmemorial.data.network.firebase
 
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
-class StorageService {
+class FirebaseService {
     fun getStorage(): String {
         return Firebase.storage.reference.storage.toString()
     }

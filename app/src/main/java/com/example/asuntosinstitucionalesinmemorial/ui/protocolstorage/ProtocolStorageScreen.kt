@@ -1,4 +1,4 @@
-package com.example.asuntosinstitucionalesinmemorial.view.protocolStorage
+package com.example.asuntosinstitucionalesinmemorial.ui.protocolstorage
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -9,13 +9,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ProtocolStorageScreen(
-    protocolStorageViewModel: ProtocolStorageViewModel = viewModel(),
+    protocolStorageViewModel: ProtocolStorageViewModel = koinViewModel(),
     navigateBack: () -> Unit
 ) {
     val uiState by protocolStorageViewModel.uiState.collectAsStateWithLifecycle()
@@ -24,7 +23,14 @@ fun ProtocolStorageScreen(
             Button(onClick = { navigateBack() }, modifier = Modifier.padding(padding)) {
                 Text(text = "Navigate Back")
             }
-            Text(text = uiState.storage, modifier = Modifier.clickable { protocolStorageViewModel.getStorage() })
+            val buttonText = if (!uiState.internetConnection) {
+                "There are not connection"
+            } else {
+                uiState.storage.material.toString()
+            }
+            Text(
+                text = buttonText,
+                modifier = Modifier.clickable { protocolStorageViewModel.downloadStorage() })
         }
     }
 }
