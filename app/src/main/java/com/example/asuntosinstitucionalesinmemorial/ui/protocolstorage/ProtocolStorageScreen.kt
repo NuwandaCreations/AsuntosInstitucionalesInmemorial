@@ -18,6 +18,7 @@ fun ProtocolStorageScreen(
     navigateBack: () -> Unit
 ) {
     val uiState by protocolStorageViewModel.uiState.collectAsStateWithLifecycle()
+    protocolStorageViewModel.addStorage()
     Scaffold { padding ->
         Column {
             Button(onClick = { navigateBack() }, modifier = Modifier.padding(padding)) {
@@ -30,7 +31,9 @@ fun ProtocolStorageScreen(
             }
             Text(
                 text = buttonText,
-                modifier = Modifier.clickable { protocolStorageViewModel.downloadStorage() })
+                modifier = Modifier.clickable {
+                    protocolStorageViewModel.getStorageFromRoom()
+                })
         }
     }
 }

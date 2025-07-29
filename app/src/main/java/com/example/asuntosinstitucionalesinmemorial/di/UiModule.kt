@@ -11,5 +11,5 @@ val uiDomain = module {
 
 val viewModelModule = module {
     viewModel { HomeViewModel() }
-    viewModel { ProtocolStorageViewModel(get()) }
+    viewModel { ProtocolStorageViewModel(get(), get(), get()) }
 }
