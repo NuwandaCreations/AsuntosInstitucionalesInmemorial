@@ -17,7 +17,7 @@ val dataModule = module {
     single { get<StorageDataBase>().materialDao() }
     single { get<StorageDataBase>().regalosDao() }
     single { DriveService(get()) }
-    single<Repository> { RepositoryImpl(get()) }
+    single<Repository> { RepositoryImpl(get(), get(), get()) }
 }
 
 fun provideRetrofit(): Retrofit {

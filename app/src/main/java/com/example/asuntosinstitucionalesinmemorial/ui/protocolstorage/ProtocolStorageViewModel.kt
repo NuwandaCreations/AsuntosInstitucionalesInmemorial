@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.MaterialDao
 import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.RegalosDao
 import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.model.RegalosEntity
+import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.model.toDomain
 import com.example.asuntosinstitucionalesinmemorial.domain.model.ProtocolStorage
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.DownloadStorageUseCase
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +59,7 @@ class ProtocolStorageViewModel(val downloadStorageUseCase: DownloadStorageUseCas
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val respuesta = regalosDao.getAllRegalos().collect { regalos ->
-//                    _uiState.update { it.copy(storage = regalos) }
+                    _uiState.update { it.copy(storage = ProtocolStorage(material = emptyList(), regalos = regalos.map { it.toDomain() })) }
                 }
             } catch (e: Exception) {
 

@@ -2,6 +2,7 @@ package com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.mod
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.asuntosinstitucionalesinmemorial.domain.model.Material
 
 @Entity
 data class MaterialEntity (
@@ -12,3 +13,7 @@ data class MaterialEntity (
     val observaciones: String?,
     val foto: String?
 )
+
+fun MaterialEntity.toDomain(): Material {
+    return Material(cantidad, localizacion, objeto, observaciones)
+}

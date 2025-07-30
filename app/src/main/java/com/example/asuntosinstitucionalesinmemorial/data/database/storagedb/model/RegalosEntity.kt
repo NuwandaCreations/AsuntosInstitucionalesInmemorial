@@ -2,6 +2,7 @@ package com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.mod
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
 
 @Entity
 data class RegalosEntity(
@@ -14,3 +15,7 @@ data class RegalosEntity(
     val requisitoRegalo: String?,
     val foto: String?
 )
+
+fun RegalosEntity.toDomain(): Regalos {
+    return Regalos(cantidad, categoria, detalleLocalizacion, localizacion, objeto, requisitoRegalo)
+}

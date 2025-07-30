@@ -16,6 +16,9 @@ interface RegalosDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addRegalo(regalo: RegalosEntity)
 
+    @Insert
+    suspend fun addListOfRegalos(regalos: List<RegalosEntity>)
+
     @Delete
     suspend fun deleteRegalo(regalo: RegalosEntity)
 }
