@@ -3,11 +3,12 @@ package com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.mod
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
+import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.EMPTY_NAME
 
 @Entity
 data class RegalosEntity(
     @PrimaryKey
-    val objeto: String = "SIN NOMBRE",
+    val objeto: String = EMPTY_NAME,
     val cantidad: Int?,
     val categoria: String?,
     val detalleLocalizacion: String?,
@@ -17,5 +18,12 @@ data class RegalosEntity(
 )
 
 fun RegalosEntity.toDomain(): Regalos {
-    return Regalos(cantidad, categoria, detalleLocalizacion, localizacion, objeto, requisitoRegalo)
+    return Regalos(
+        cantidad,
+        categoria,
+        detalleLocalizacion,
+        localizacion,
+        objeto,
+        requisitoRegalo
+    )
 }

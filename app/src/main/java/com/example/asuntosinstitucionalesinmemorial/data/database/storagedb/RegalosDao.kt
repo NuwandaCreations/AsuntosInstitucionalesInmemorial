@@ -14,11 +14,8 @@ interface RegalosDao {
     fun getAllRegalos(): Flow<List<RegalosEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addRegalo(regalo: RegalosEntity)
-
-    @Insert
-    suspend fun addListOfRegalos(regalos: List<RegalosEntity>)
+    suspend fun addRegalos(vararg regalos: RegalosEntity)
 
     @Delete
-    suspend fun deleteRegalo(regalo: RegalosEntity)
+    suspend fun deleteRegalos(vararg regalos: RegalosEntity)
 }

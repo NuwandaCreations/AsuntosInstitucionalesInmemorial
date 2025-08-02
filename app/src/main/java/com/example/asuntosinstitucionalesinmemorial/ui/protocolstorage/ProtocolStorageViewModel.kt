@@ -2,32 +2,34 @@ package com.example.asuntosinstitucionalesinmemorial.ui.protocolstorage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.MaterialDao
-import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.RegalosDao
-import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.model.RegalosEntity
 import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.model.toDomain
+import com.example.asuntosinstitucionalesinmemorial.domain.model.Material
 import com.example.asuntosinstitucionalesinmemorial.domain.model.ProtocolStorage
+import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.DownloadStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.AddMaterialUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.DeleteMaterialUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.GetMaterialUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.AddRegalosUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.DeleteRegalosUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.GetRegalosUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ProtocolStorageViewModel(val downloadStorageUseCase: DownloadStorageUseCase, val regalosDao: RegalosDao, val materialDao: MaterialDao) : ViewModel() {
+class ProtocolStorageViewModel(
+    val downloadStorageUseCase: DownloadStorageUseCase,
+    val addRegalosUseCase: AddRegalosUseCase,
+    val getRegalosUseCase: GetRegalosUseCase,
+    val deleteRegalosUseCase: DeleteRegalosUseCase,
+    val addMaterialUseCase: AddMaterialUseCase,
+    val getMaterialUseCase: GetMaterialUseCase,
+    val deleteMaterialUseCase: DeleteMaterialUseCase
+) : ViewModel() {
     private val _uiState = MutableStateFlow(ProtocolStorageUiState())
     val uiState: StateFlow<ProtocolStorageUiState> = _uiState
-
-    fun getStorage() {
-        _uiState.update {
-            //TODO download from firebase or room
-            it
-        }
-    }
 
     fun downloadStorage() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -44,25 +46,74 @@ class ProtocolStorageViewModel(val downloadStorageUseCase: DownloadStorageUseCas
         }
     }
 
-    fun addStorage() {
+    fun addRegalosToDB(vararg regalos: Regalos) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val regalo = RegalosEntity("regalito", 3, "regalito", "regalito", "regalito", "regalito", "regalito")
-                regalosDao.addRegalo(regalo)
-            } catch (e: Exception) {
-
+                addRegalosUseCase(*regalos)
+            } catch (_: Exception) {
+                _uiState.update { it.copy(error = "No se han podido añadir los regalos") }
             }
         }
     }
 
-    fun getStorageFromRoom() {
+    fun getRegalosFromDB() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val respuesta = regalosDao.getAllRegalos().collect { regalos ->
-                    _uiState.update { it.copy(storage = ProtocolStorage(material = emptyList(), regalos = regalos.map { it.toDomain() })) }
+                getRegalosUseCase().collect { regalos ->
+                    _uiState.update {
+                        it.copy(
+                            storage = it.storage.copy(regalos = regalos.map { regaloEntity -> regaloEntity.toDomain() })
+                        )
+                    }
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
+                _uiState.update { it.copy(error = "No se pudieron obtener los regalos guardados") }
+            }
+        }
+    }
 
+    fun deleteRegalosFromDB(vararg regalos: Regalos) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                deleteRegalosUseCase(*regalos)
+            } catch (_: Exception) {
+                _uiState.update { it.copy(error = "No se ha podido eliminar el regalo") }
+            }
+        }
+    }
+
+    fun addMaterialToDB(vararg material: Material) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                addMaterialUseCase(*material)
+            } catch (_: Exception) {
+                _uiState.update { it.copy(error = "No se han podido añadir el material") }
+            }
+        }
+    }
+
+    fun getMaterialFromDB() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                getMaterialUseCase().collect { material ->
+                    _uiState.update {
+                        it.copy(
+                            storage = it.storage.copy(material = material.map { materialEntity -> materialEntity.toDomain() })
+                        )
+                    }
+                }
+            } catch (_: Exception) {
+                _uiState.update { it.copy(error = "No se pudo obtener el material guardado") }
+            }
+        }
+    }
+
+    fun deleteMaterialFromDB(vararg material: Material) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                deleteMaterialUseCase(*material)
+            } catch (_: Exception) {
+                _uiState.update { it.copy(error = "No se ha podido eliminar el material") }
             }
         }
     }
@@ -70,5 +121,6 @@ class ProtocolStorageViewModel(val downloadStorageUseCase: DownloadStorageUseCas
 
 data class ProtocolStorageUiState(
     val storage: ProtocolStorage = ProtocolStorage(),
-    val internetConnection: Boolean = true
+    val internetConnection: Boolean = true,
+    val error: String = "Error"
 )

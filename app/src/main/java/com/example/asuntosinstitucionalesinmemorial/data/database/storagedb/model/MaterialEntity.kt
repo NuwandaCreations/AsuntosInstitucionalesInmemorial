@@ -3,11 +3,12 @@ package com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.mod
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Material
+import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.EMPTY_NAME
 
 @Entity
-data class MaterialEntity (
+data class MaterialEntity(
     @PrimaryKey
-    val objeto: String = "SIN NOMBRE",
+    val objeto: String = EMPTY_NAME,
     val cantidad: Int?,
     val localizacion: String?,
     val observaciones: String?,
@@ -15,5 +16,10 @@ data class MaterialEntity (
 )
 
 fun MaterialEntity.toDomain(): Material {
-    return Material(cantidad, localizacion, objeto, observaciones)
+    return Material(
+        cantidad,
+        localizacion,
+        objeto,
+        observaciones
+    )
 }

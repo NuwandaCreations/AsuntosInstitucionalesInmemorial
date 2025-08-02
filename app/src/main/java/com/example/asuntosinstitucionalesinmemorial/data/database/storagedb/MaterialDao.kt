@@ -14,8 +14,8 @@ interface MaterialDao {
     fun getAllMaterial(): Flow<List<MaterialEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addMaterial(material: MaterialEntity)
+    suspend fun addMaterial(vararg material: MaterialEntity)
 
     @Delete
-    suspend fun deleteMaterial(material: MaterialEntity)
+    suspend fun deleteMaterial(vararg material: MaterialEntity)
 }
