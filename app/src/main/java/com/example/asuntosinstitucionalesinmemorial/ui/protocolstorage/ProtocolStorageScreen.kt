@@ -10,8 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.asuntosinstitucionalesinmemorial.domain.model.Material
-import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -20,56 +20,9 @@ fun ProtocolStorageScreen(
     navigateBack: () -> Unit
 ) {
     val uiState by protocolStorageViewModel.uiState.collectAsStateWithLifecycle()
+    val firestore = Firebase.firestore
 
-    val regalo = arrayOf(
-        Regalos(
-            3,
-            "regalito",
-            "regalito",
-            "regalito",
-            "regalito",
-            "regalito"
-        ),
-        Regalos(
-            7,
-            "segundo",
-            "segundo",
-            "segundo",
-            "segundo",
-            "segundo"
-        ),
-        Regalos(
-            12,
-            "último",
-            "último",
-            "último",
-            "último",
-            "último"
-        )
-    )
-    protocolStorageViewModel.addRegalosToDB(*regalo)
-
-    val material = arrayOf(
-        Material(
-            2,
-            "miMaterial",
-            "miMaterial",
-            "miMaterial"
-        ),
-        Material(
-            17,
-            "otro",
-            "otro",
-            "otro"
-        ),
-        Material(
-            32,
-            "más",
-            "más",
-            "más"
-        )
-    )
-    protocolStorageViewModel.addMaterialToDB(*material)
+    protocolStorageViewModel.downloadStorage()
 
     Scaffold { padding ->
         Column {
@@ -79,46 +32,34 @@ fun ProtocolStorageScreen(
             val buttonText = if (!uiState.internetConnection) {
                 "There are not connection"
             } else {
-                if (uiState.storage.material.isNotEmpty()) {
-                    uiState.storage.material.toString()
-                } else {
-                    "material is empty"
-                }
+//                if (uiState.storage.material.isNotEmpty()) {
+//                    uiState.storage.material.toString()
+//                } else {
+//                    "material is empty"
+//                }
+                uiState.storage.regalos.toString()
             }
             Text(
                 text = buttonText,
                 modifier = Modifier.clickable {
-//                    protocolStorageViewModel.deleteRegalosFromDB(
-//                        *arrayOf(
-//                            Regalos(
-//                                3,
-//                                "regalito",
-//                                "regalito",
-//                                "regalito",
-//                                "regalito",
-//                                "regalito"
-//                            ),
-//                            Regalos(
-//                                7,
-//                                "segundo",
-//                                "segundo",
-//                                "segundo",
-//                                "segundo",
-//                                "segundo"
-//                            )
+                    protocolStorageViewModel.addMaterialToDB(*uiState.storage.material.toTypedArray())
+                    protocolStorageViewModel.addRegalosToDB(*uiState.storage.regalos.toTypedArray())
+                    protocolStorageViewModel.getRegalosFromDB()
+
+//                    protocolStorageViewModel.deleteMaterialFromDB(
+//                        Material(
+//                            32,
+//                            "más",
+//                            "más",
+//                            "más"
 //                        )
 //                    )
-//                    protocolStorageViewModel.getRegalosFromDB()
-                    protocolStorageViewModel.deleteMaterialFromDB(
-                        Material(
-                            32,
-                            "más",
-                            "más",
-                            "más"
-                        )
-                    )
                     protocolStorageViewModel.getMaterialFromDB()
-                })
+//                    uiState.storage.material.forEach { material ->
+//                        firestore.collection("material").document("${material.objeto}").set(material)
+//                    }
+                }
+            )
         }
     }
 }
