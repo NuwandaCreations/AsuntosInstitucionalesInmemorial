@@ -1,5 +1,7 @@
 package com.example.asuntosinstitucionalesinmemorial.ui.protocolstorage
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.model.toDomain
@@ -14,6 +16,7 @@ import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosuseca
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.DeleteRegalosUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.GetRegalosUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -117,10 +120,19 @@ class ProtocolStorageViewModel(
             }
         }
     }
+
+    @Composable
+    fun CircularProgressCountdown() {
+        LaunchedEffect("circularProgress") {
+            delay(20000)
+            _uiState.update { it.copy(progressVisibility = false) }
+        }
+    }
 }
 
 data class ProtocolStorageUiState(
     val storage: ProtocolStorage = ProtocolStorage(),
     val internetConnection: Boolean = true,
-    val error: String = "Error"
+    val error: String = "Error",
+    val progressVisibility: Boolean = true
 )
