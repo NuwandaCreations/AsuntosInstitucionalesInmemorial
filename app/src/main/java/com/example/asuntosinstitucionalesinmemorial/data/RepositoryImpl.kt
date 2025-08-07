@@ -13,7 +13,7 @@ import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
 import com.example.asuntosinstitucionalesinmemorial.domain.model.toData
 import kotlinx.coroutines.flow.Flow
 
-class RepositoryImpl(
+class     RepositoryImpl(
     val googleDriveService: DriveService,
     val regalosDao: RegalosDao,
     val materialDao: MaterialDao

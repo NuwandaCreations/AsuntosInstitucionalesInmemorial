@@ -4,10 +4,10 @@ import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.mode
 import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.EMPTY_NAME
 
 data class Material(
-    val cantidad: Int?,
-    val localizacion: String?,
-    val objeto: String?,
-    val observaciones: String?
+    val cantidad: Int? = null,
+    val localizacion: String? = null,
+    val objeto: String? = null,
+    val observaciones: String? = null
 )
 
 fun Material.toData(): MaterialEntity {

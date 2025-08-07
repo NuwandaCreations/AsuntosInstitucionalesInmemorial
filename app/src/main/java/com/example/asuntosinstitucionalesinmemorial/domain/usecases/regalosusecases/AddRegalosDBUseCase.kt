@@ -3,8 +3,8 @@ package com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusec
 import com.example.asuntosinstitucionalesinmemorial.domain.Repository
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
 
-class DeleteRegalosUseCase(val repository: Repository) {
+class AddRegalosDBUseCase(val repository: Repository) {
     suspend operator fun invoke(vararg regalos: Regalos) {
-        repository.deleteRegalosDB(*regalos)
+        repository.addRegalosDB(*regalos)
     }
 }

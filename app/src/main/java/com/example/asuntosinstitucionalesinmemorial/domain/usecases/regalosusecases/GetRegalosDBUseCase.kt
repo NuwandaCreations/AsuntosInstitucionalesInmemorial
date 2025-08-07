@@ -4,7 +4,7 @@ import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.mode
 import com.example.asuntosinstitucionalesinmemorial.domain.Repository
 import kotlinx.coroutines.flow.Flow
 
-class GetRegalosUseCase(val repository: Repository) {
+class GetRegalosDBUseCase(val repository: Repository) {
     suspend operator fun invoke(): Flow<List<RegalosEntity>> {
         return repository.getRegalosDB()
     }

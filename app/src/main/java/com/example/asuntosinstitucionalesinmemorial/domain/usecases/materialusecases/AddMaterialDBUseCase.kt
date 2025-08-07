@@ -3,8 +3,8 @@ package com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialuse
 import com.example.asuntosinstitucionalesinmemorial.domain.Repository
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Material
 
-class DeleteMaterialUseCase(val repository: Repository) {
+class AddMaterialDBUseCase(val repository: Repository) {
     suspend operator fun invoke(vararg material: Material) {
-        repository.deleteMaterialDB(*material)
+        repository.addMaterialDB(*material)
     }
 }
