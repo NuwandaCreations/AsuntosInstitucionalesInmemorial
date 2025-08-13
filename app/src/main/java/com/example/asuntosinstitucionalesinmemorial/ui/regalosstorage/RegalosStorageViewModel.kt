@@ -1,4 +1,4 @@
-package com.example.asuntosinstitucionalesinmemorial.ui.protocolstorage
+package com.example.asuntosinstitucionalesinmemorial.ui.regalosstorage
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -9,6 +9,8 @@ import com.example.asuntosinstitucionalesinmemorial.domain.model.Material
 import com.example.asuntosinstitucionalesinmemorial.domain.model.ProtocolStorage
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.DownloadStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetMaterialStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetRegalosStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.AddMaterialDBUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.DeleteMaterialDBUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.DeleteMaterialFirestoreUseCase
@@ -28,7 +30,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ProtocolStorageViewModel(
+class RegalosStorageViewModel(
     val downloadStorageUseCase: DownloadStorageUseCase,
     val addRegalosDBUseCase: AddRegalosDBUseCase,
     val getRegalosDBUseCase: GetRegalosDBUseCase,
@@ -42,9 +44,11 @@ class ProtocolStorageViewModel(
     val setMaterialFirestoreUseCase: SetMaterialFirestoreUseCase,
     val getMaterialFirestoreUseCase: GetMaterialFirestoreUseCase,
     val deleteMaterialFirestoreUseCase: DeleteMaterialFirestoreUseCase,
+    val getRegalosStorageUseCase: GetRegalosStorageUseCase,
+    val getMaterialStorageUseCase: GetMaterialStorageUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(ProtocolStorageUiState())
-    val uiState: StateFlow<ProtocolStorageUiState> = _uiState
+    private val _uiState = MutableStateFlow(RegalosStorageUiState())
+    val uiState: StateFlow<RegalosStorageUiState> = _uiState
 
     fun downloadStorage() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -205,6 +209,40 @@ class ProtocolStorageViewModel(
         }
     }
 
+    fun getRegalosStorage() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                var regalosList = emptyList<Regalos>()
+                val job = launch {
+                    regalosList = getRegalosStorageUseCase().toList()
+                }
+                //con esto esperamos a que acabe el use case y devuelva el storage
+                job.join()
+                _uiState.update { it.copy(storage = it.storage.copy(regalos = regalosList)) }
+            } catch (_: Exception) {
+                _uiState.update { it.copy(internetConnection = false) }
+            }
+        }
+
+    }
+
+    fun getMaterialStorage() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                var materialList = emptyList<Material>()
+                val job = launch {
+                    materialList = getMaterialStorageUseCase().toList()
+                }
+                //con esto esperamos a que acabe el use case y devuelva el storage
+                job.join()
+                _uiState.update { it.copy(storage = it.storage.copy(material = materialList)) }
+            } catch (_: Exception) {
+                _uiState.update { it.copy(internetConnection = false) }
+            }
+        }
+
+    }
+
     @Composable
     fun CircularProgressCountdown() {
         LaunchedEffect("circularProgress") {
@@ -214,7 +252,7 @@ class ProtocolStorageViewModel(
     }
 }
 
-data class ProtocolStorageUiState(
+data class RegalosStorageUiState(
     val storage: ProtocolStorage = ProtocolStorage(),
     val internetConnection: Boolean = true,
     val error: String = "Error",

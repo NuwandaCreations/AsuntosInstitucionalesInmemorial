@@ -8,16 +8,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.asuntosinstitucionalesinmemorial.ui.core.navigation.NavigationBar
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun HomeScreen(homeViewModel: HomeViewModel = koinViewModel(), navigateToProtocolStorage: () -> Unit) {
+fun HomeScreen(
+    homeViewModel: HomeViewModel = koinViewModel(),
+    navigateBack: () -> Unit
+) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     homeViewModel.onIsLoadingChanged(true)
-    Scaffold() { padding ->
+    Scaffold { padding ->
         Button(
             onClick = {
-                navigateToProtocolStorage()
+                navigateBack()
                 homeViewModel.onIsLoadingChanged(false)
             },
             modifier = Modifier.padding(padding)

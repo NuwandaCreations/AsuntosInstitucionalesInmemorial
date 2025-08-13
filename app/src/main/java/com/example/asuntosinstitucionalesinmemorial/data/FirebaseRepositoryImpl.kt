@@ -1,23 +1,50 @@
 package com.example.asuntosinstitucionalesinmemorial.data
 
+import android.util.Log
 import com.example.asuntosinstitucionalesinmemorial.domain.FirebaseRepository
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Material
-import com.example.asuntosinstitucionalesinmemorial.domain.model.ProtocolStorage
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
 import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.MATERIAL
+import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.MATERIAL_JSON
 import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.REGALOS
+import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.REGALOS_JSON
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.tasks.await
 
 class FirebaseRepositoryImpl(
-    val firebaseStorage: FirebaseStorage,
+    val firebaseStorage: FirebaseStorage = FirebaseStorage.getInstance(),
     val firestore: FirebaseFirestore
 ) : FirebaseRepository {
-    override fun setStorageFirestore(storage: ProtocolStorage) {
-        TODO("Not yet implemented")
+    override suspend fun getRegalosStorageJSON(): String {
+        var jsonString = ""
+        firebaseStorage.reference.child(REGALOS_JSON).getBytes(Long.MAX_VALUE)
+            .addOnSuccessListener { bytes ->
+                jsonString = String(bytes)
+                Log.i("Firebase", "JSON regalos descargado: $jsonString")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firebase", "Error descargando JSON", exception)
+            }
+            .await()
+        return jsonString
+    }
+
+    override suspend fun getMaterialStorageJSON(): String {
+        var jsonString = ""
+        firebaseStorage.reference.child(MATERIAL_JSON).getBytes(Long.MAX_VALUE)
+            .addOnSuccessListener { bytes ->
+                jsonString = String(bytes)
+                Log.i("Firebase", "JSON material descargado: $jsonString")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firebase", "Error descargando JSON", exception)
+            }
+            .await()
+        return jsonString
     }
 
     override fun setRegaloFirestore(regalo: Regalos) {

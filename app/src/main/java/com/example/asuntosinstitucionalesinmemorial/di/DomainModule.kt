@@ -1,6 +1,8 @@
 package com.example.asuntosinstitucionalesinmemorial.di
 
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.DownloadStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetMaterialStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetRegalosStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.AddMaterialDBUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.DeleteMaterialDBUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.DeleteMaterialFirestoreUseCase
@@ -8,8 +10,8 @@ import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusec
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.GetMaterialFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.SetMaterialFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.AddRegalosDBUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.DeleteRegalosDBUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.DeleteRegaloFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.DeleteRegalosDBUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.GetRegalosDBUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.GetRegalosFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.SetRegaloFirestoreUseCase
@@ -29,5 +31,6 @@ val domainModule = module {
     single { SetMaterialFirestoreUseCase(get()) }
     single { GetMaterialFirestoreUseCase(get()) }
     single { DeleteMaterialFirestoreUseCase(get()) }
-
+    single { GetRegalosStorageUseCase(get()) }
+    single { GetMaterialStorageUseCase(get()) }
 }
