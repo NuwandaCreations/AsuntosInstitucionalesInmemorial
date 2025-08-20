@@ -24,7 +24,12 @@ object MaterialStorage : AppScreen {
 
 @Serializable
 object StorageDetail : AppScreen {
-    override val route = "Home"
+    override val route = "StorageDetail"
+}
+
+@Serializable
+object EditStorage : AppScreen {
+    override val route = "EditStorage"
 }
 
 @Serializable

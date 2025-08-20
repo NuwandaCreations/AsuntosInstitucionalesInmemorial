@@ -14,9 +14,10 @@ data class MaterialEntity(
     val observaciones: String?,
     val foto: String?
 )
-
+//TODO LA CATEGORIA Y OBSERVACIONES/REQUISITO HAY QUE AJUSTAR
 fun MaterialEntity.toDomain(): Material {
     return Material(
+        null,
         cantidad,
         localizacion,
         objeto,

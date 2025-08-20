@@ -20,39 +20,36 @@ class FirebaseRepositoryImpl(
     val firestore: FirebaseFirestore
 ) : FirebaseRepository {
     override suspend fun getRegalosStorageJSON(): String {
-        var jsonString = ""
-        firebaseStorage.reference.child(REGALOS_JSON).getBytes(Long.MAX_VALUE)
-            .addOnSuccessListener { bytes ->
-                jsonString = String(bytes)
-                Log.i("Firebase", "JSON regalos descargado: $jsonString")
-            }
-            .addOnFailureListener { exception ->
-                Log.e("Firebase", "Error descargando JSON", exception)
-            }
-            .await()
-        return jsonString
+        return try {
+            val bytes =
+                firebaseStorage.reference.child(REGALOS_JSON).getBytes(Long.MAX_VALUE).await()
+            val jsonString = String(bytes)
+            Log.i("Firebase", "JSON regalos descargado: $jsonString")
+            jsonString
+        } catch (e: Exception) {
+            Log.e("Firebase", "Error descargando JSON", e)
+            ""
+        }
     }
 
     override suspend fun getMaterialStorageJSON(): String {
-        var jsonString = ""
-        firebaseStorage.reference.child(MATERIAL_JSON).getBytes(Long.MAX_VALUE)
-            .addOnSuccessListener { bytes ->
-                jsonString = String(bytes)
-                Log.i("Firebase", "JSON material descargado: $jsonString")
-            }
-            .addOnFailureListener { exception ->
-                Log.e("Firebase", "Error descargando JSON", exception)
-            }
-            .await()
-        return jsonString
+        return try {
+            val bytes =
+                firebaseStorage.reference.child(MATERIAL_JSON).getBytes(Long.MAX_VALUE).await()
+            val jsonString = String(bytes)
+            Log.i("Firebase", "JSON material descargado: $jsonString")
+            jsonString
+        } catch (e: Exception) {
+            Log.e("Firebase", "Error descargando JSON", e)
+            ""
+        }
     }
 
-    override fun setRegaloFirestore(regalo: Regalos) {
+    override suspend fun setRegaloFirestore(regalo: Regalos) {
         firestore.collection(REGALOS).document("${regalo.objeto}").set(regalo)
-
     }
 
-    override fun setMaterialFirestore(material: Material) {
+    override suspend fun setMaterialFirestore(material: Material) {
         firestore.collection(MATERIAL).document("${material.objeto}").set(material)
     }
 
@@ -72,11 +69,39 @@ class FirebaseRepositoryImpl(
             }
     }
 
-    override fun deleteRegalosFirestore(regalos: Regalos) {
+    override suspend fun deleteRegalosFirestore(regalos: Regalos) {
         firestore.collection(REGALOS).document("${regalos.objeto}").delete()
     }
 
-    override fun deleteMaterialFirestore(material: Material) {
+    override suspend fun deleteMaterialFirestore(material: Material) {
         firestore.collection(MATERIAL).document("${material.objeto}").delete()
     }
+
+    override suspend fun deleteAllRegalosFirestore() {
+        firestore.collection(REGALOS)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot.documents) {
+                    document.reference.delete()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Error eliminando regalos: ", exception)
+            }
+    }
+
+    override suspend fun deleteAllMaterialFirestore() {
+        firestore.collection(MATERIAL)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot.documents) {
+                    document.reference.delete()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Error eliminando material: ", exception)
+            }
+    }
+
+
 }

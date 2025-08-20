@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.example.asuntosinstitucionalesinmemorial.data.FirebaseRepositoryImpl
 import com.example.asuntosinstitucionalesinmemorial.data.RepositoryImpl
 import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.StorageDataBase
-import com.example.asuntosinstitucionalesinmemorial.data.network.drive.DriveService
 import com.example.asuntosinstitucionalesinmemorial.domain.FirebaseRepository
 import com.example.asuntosinstitucionalesinmemorial.domain.Repository
 import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.BASE_URL
@@ -23,8 +22,7 @@ val dataModule = module {
     single { provideStorageDataBase(get()) }
     single { get<StorageDataBase>().materialDao() }
     single { get<StorageDataBase>().regalosDao() }
-    single { DriveService(get()) }
-    single<Repository> { RepositoryImpl(get(), get(), get()) }
+    single<Repository> { RepositoryImpl(get(), get()) }
     single<FirebaseRepository> {
         FirebaseRepositoryImpl(
             provideFirebaseStorage(),

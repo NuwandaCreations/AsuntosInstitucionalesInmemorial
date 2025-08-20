@@ -1,48 +1,143 @@
 package com.example.asuntosinstitucionalesinmemorial.ui.regalosstorage
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.example.asuntosinstitucionalesinmemorial.R
 import com.example.asuntosinstitucionalesinmemorial.ui.core.components.Card
-import com.example.asuntosinstitucionalesinmemorial.ui.core.navigation.StorageDetail
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun RegalosStorageScreen(
     regalosStorageViewModel: RegalosStorageViewModel = koinViewModel(),
-    navController: NavController
+    goToDetail: () -> Unit,
+    goToEdit: () -> Unit
 ) {
     val uiState by regalosStorageViewModel.uiState.collectAsStateWithLifecycle()
+    var search by rememberSaveable { mutableStateOf("") }
 
-    Scaffold(containerColor = colorResource(R.color.onPrimaryBackground)) { padding ->
-        Column(modifier = Modifier.padding(padding).background(colorResource(R.color.onPrimaryBackground))) {
-            Card("Alfiler", "Coronelía", R.drawable.ic_present)
-            Card("Alfiler", "Coronelía", R.drawable.ic_present)
-            Card("Alfiler", "Coronelía", R.drawable.ic_present)
-            Card("Alfiler", "Coronelía", R.drawable.ic_present)
-            Button(
-                onClick = { navController.navigate(StorageDetail) },
-                modifier = Modifier.padding(padding)
-            ) {
-                Text(text = "Navigate Back")
+    regalosStorageViewModel.getRegalosFirestore()
+
+    Scaffold(
+        containerColor = colorResource(R.color.onPrimaryBackground),
+        floatingActionButton = {
+            FloatingActionButton(onClick = { goToEdit() }) {
+                Icon(Icons.Default.Add, "AddRegalo")
             }
+        },
+        floatingActionButtonPosition = FabPosition.EndOverlay
+    ) { padding ->
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "Inventario regalos protocolo",
+                modifier = Modifier.padding(top = 10.dp),
+                color = Color.White,
+                fontSize = 20.sp,
+                fontFamily = FontFamily(Font(R.font.inknut_antiqua_semibold))
+            )
+            OutlinedTextField(
+                value = search,
+                leadingIcon = {
+                    Image(
+                        Icons.Default.Menu,
+                        contentDescription = "Menu",
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable {
+                                //TODO DROPDOWN MENU
+                            }
+                    )
+                },
+                trailingIcon = {
+                    Image(
+                        Icons.Default.Search,
+                        contentDescription = "Search",
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable {
+                                //TODO SEARCH
+                            }
+                    )
+                },
+                modifier = Modifier
+                    .padding(top = 10.dp, bottom = 15.dp, start = 15.dp, end = 15.dp)
+                    .fillMaxWidth(),
+                onValueChange = { search = it },
+                maxLines = 1,
+                shape = RoundedCornerShape(40.dp),
+                placeholder = { Text("Nombre del regalo...") },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedLeadingIconColor = colorResource(R.color.onPrimary),
+                    focusedBorderColor = Color.White,
+                    unfocusedBorderColor = Color.White,
+                    focusedTextColor = Color.Black
+                )
+            )
+            LazyColumn(
+                flingBehavior = ScrollableDefaults.flingBehavior(),
+                state = rememberLazyListState(),
+            ) {
+                items(uiState.storage.regalos) {
+                    Card("${it.objeto}", "${it.categoria}", R.drawable.ic_present) {
+                        goToDetail()
+                    }
+                }
+            }
+
+
+//            uiState.storage.regalos.forEach {
+//                item {
+//                    Card("${it.objeto}","${it.categoria}",R.drawable.ic_present)
+//                }
+//            }
         }
+//        Column(modifier = Modifier.padding(padding).background(colorResource(R.color.onPrimaryBackground))) {
+//            Card("Alfiler", "Coronelía", R.drawable.ic_present)
+//            Card("Alfiler", "Coronelía", R.drawable.ic_present)
+//            Card("Alfiler", "Coronelía", R.drawable.ic_present)
+//            Card("Alfiler", "Coronelía", R.drawable.ic_present)
+//            Card("Alfiler", "Coronelía", R.drawable.ic_present)
+//            Card("Alfiler", "Coronelía", R.drawable.ic_present)
+//        }
     }
 //    protocolStorageViewModel.downloadStorage()
 //    val abanicos = Regalos(

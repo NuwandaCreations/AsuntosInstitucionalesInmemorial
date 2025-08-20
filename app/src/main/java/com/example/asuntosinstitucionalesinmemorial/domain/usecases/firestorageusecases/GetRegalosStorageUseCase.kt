@@ -9,7 +9,10 @@ class GetRegalosStorageUseCase(val repository: FirebaseRepository) {
     suspend operator fun invoke(): List<Regalos> {
         val jsonString = repository.getRegalosStorageJSON().trimIndent()
         val listType = object : TypeToken<List<Regalos>>() {}.type
-        val regalosList: List<Regalos> = Gson().fromJson(jsonString, listType)
-        return regalosList
+        return if (jsonString.isNotEmpty()) {
+            Gson().fromJson(jsonString, listType)
+        } else {
+            emptyList()
+        }
     }
 }

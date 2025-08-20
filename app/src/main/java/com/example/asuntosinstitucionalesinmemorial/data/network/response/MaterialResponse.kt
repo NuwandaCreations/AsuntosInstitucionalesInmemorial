@@ -11,5 +11,5 @@ data class MaterialResponse(
 )
 
 fun MaterialResponse.toDomain(): Material {
-    return Material(cantidad, localizacion, objeto, observaciones)
+    return Material(null, cantidad, localizacion, objeto, observaciones)
 }

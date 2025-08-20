@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.asuntosinstitucionalesinmemorial.ui.editstorage.EditStorageScreen
 import com.example.asuntosinstitucionalesinmemorial.ui.events.EventsScreen
 
 import com.example.asuntosinstitucionalesinmemorial.ui.home.HomeScreen
@@ -25,9 +26,19 @@ fun NavigationWrapper() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable<Home> { HomeScreen(navigateBack = { navController.popBackStack() }) }
-            composable<RegalosStorage> { RegalosStorageScreen(navController = navController) }
-            composable<MaterialStorage> { MaterialStorageScreen(navController = navController) }
+            composable<RegalosStorage> {
+                RegalosStorageScreen(
+                    goToDetail = { navController.navigate(StorageDetail) },
+                    goToEdit = { navController.navigate(EditStorage) }
+                )
+            }
+            composable<MaterialStorage> {
+                MaterialStorageScreen(goToDetail = {
+                    navController.navigate(StorageDetail)
+                })
+            }
             composable<StorageDetail> { StorageDetailScreen(navigateBack = { navController.popBackStack() }) }
+            composable<EditStorage> { EditStorageScreen() }
             composable<Events> { EventsScreen(navController = navController) }
         }
     }

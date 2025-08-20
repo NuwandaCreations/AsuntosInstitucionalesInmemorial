@@ -18,4 +18,7 @@ interface MaterialDao {
 
     @Delete
     suspend fun deleteMaterial(vararg material: MaterialEntity)
+
+    @Query("DELETE FROM MaterialEntity")
+    suspend fun deleteAllMaterial()
 }

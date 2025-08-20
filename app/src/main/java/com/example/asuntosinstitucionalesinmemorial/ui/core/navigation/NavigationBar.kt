@@ -43,8 +43,12 @@ fun NavigationBar(navController: NavHostController) {
                     unselectedTextColor = colorResource(id = R.color.onPrimary),
                 ),
                 onClick = {
-                    navController.navigate(item.screen) {
-                        navController.popBackStack()
+                    when (item.screen) {
+                        Home -> {  navController.navigate(item.screen) }
+                        Events -> {  navController.navigate(item.screen) }
+                        RegalosStorage -> {  navController.navigate(item.screen) }
+                        MaterialStorage -> {  navController.navigate(item.screen) }
+                        else -> {}
                     }
                 }
             )

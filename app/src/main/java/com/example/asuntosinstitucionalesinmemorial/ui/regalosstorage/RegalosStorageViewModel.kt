@@ -5,18 +5,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.model.toDomain
-import com.example.asuntosinstitucionalesinmemorial.domain.model.Material
 import com.example.asuntosinstitucionalesinmemorial.domain.model.ProtocolStorage
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.DownloadStorageUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetMaterialStorageUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetRegalosStorageUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.AddMaterialDBUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.DeleteMaterialDBUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.DeleteMaterialFirestoreUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.GetMaterialDBUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.GetMaterialFirestoreUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.SetMaterialFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.AddRegalosDBUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.DeleteRegaloFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.DeleteRegalosDBUseCase
@@ -31,39 +21,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class RegalosStorageViewModel(
-    val downloadStorageUseCase: DownloadStorageUseCase,
     val addRegalosDBUseCase: AddRegalosDBUseCase,
     val getRegalosDBUseCase: GetRegalosDBUseCase,
     val deleteRegalosDBUseCase: DeleteRegalosDBUseCase,
-    val addMaterialDBUseCase: AddMaterialDBUseCase,
-    val getMaterialDBUseCase: GetMaterialDBUseCase,
-    val deleteMaterialDBUseCase: DeleteMaterialDBUseCase,
     val setRegaloFirestoreUseCase: SetRegaloFirestoreUseCase,
     val getRegalosFirestoreUseCase: GetRegalosFirestoreUseCase,
-    val deleteRegaloFirestoreUseCase: DeleteRegaloFirestoreUseCase,
-    val setMaterialFirestoreUseCase: SetMaterialFirestoreUseCase,
-    val getMaterialFirestoreUseCase: GetMaterialFirestoreUseCase,
-    val deleteMaterialFirestoreUseCase: DeleteMaterialFirestoreUseCase,
-    val getRegalosStorageUseCase: GetRegalosStorageUseCase,
-    val getMaterialStorageUseCase: GetMaterialStorageUseCase
+    val deleteRegaloFirestoreUseCase: DeleteRegaloFirestoreUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RegalosStorageUiState())
     val uiState: StateFlow<RegalosStorageUiState> = _uiState
-
-    fun downloadStorage() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val myStorage = downloadStorageUseCase()
-                _uiState.update {
-                    it.copy(storage = myStorage, internetConnection = true)
-                }
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(internetConnection = false)
-                }
-            }
-        }
-    }
 
     fun addRegalosToDB(vararg regalos: Regalos) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -101,41 +67,6 @@ class RegalosStorageViewModel(
         }
     }
 
-    fun addMaterialToDB(vararg material: Material) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                addMaterialDBUseCase(*material)
-            } catch (_: Exception) {
-                _uiState.update { it.copy(error = "No se han podido añadir el material") }
-            }
-        }
-    }
-
-    fun getMaterialFromDB() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                getMaterialDBUseCase().collect { material ->
-                    _uiState.update {
-                        it.copy(
-                            storage = it.storage.copy(material = material.map { materialEntity -> materialEntity.toDomain() })
-                        )
-                    }
-                }
-            } catch (_: Exception) {
-                _uiState.update { it.copy(error = "No se pudo obtener el material guardado") }
-            }
-        }
-    }
-
-    fun deleteMaterialFromDB(vararg material: Material) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                deleteMaterialDBUseCase(*material)
-            } catch (_: Exception) {
-                _uiState.update { it.copy(error = "No se ha podido eliminar el material") }
-            }
-        }
-    }
 
     fun getRegalosFirestore() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -148,7 +79,7 @@ class RegalosStorageViewModel(
                     }
                 }
             } catch (_: Exception) {
-                _uiState.update { it.copy(internetConnection = false) }
+                getRegalosFromDB()
             }
         }
     }
@@ -173,75 +104,6 @@ class RegalosStorageViewModel(
         }
     }
 
-    fun getMaterialFirestore() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                getMaterialFirestoreUseCase().collect { material ->
-                    _uiState.update {
-                        it.copy(
-                            storage = it.storage.copy(material = material)
-                        )
-                    }
-                }
-            } catch (_: Exception) {
-                _uiState.update { it.copy(internetConnection = false) }
-            }
-        }
-    }
-
-    fun setMaterialFirestore(material: Material) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                setMaterialFirestoreUseCase(material)
-            } catch (_: Exception) {
-                _uiState.update { it.copy(internetConnection = false) }
-            }
-        }
-    }
-
-    fun deleteMaterialFirestore(material: Material) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                deleteMaterialFirestoreUseCase(material)
-            } catch (_: Exception) {
-                _uiState.update { it.copy(internetConnection = false) }
-            }
-        }
-    }
-
-    fun getRegalosStorage() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                var regalosList = emptyList<Regalos>()
-                val job = launch {
-                    regalosList = getRegalosStorageUseCase().toList()
-                }
-                //con esto esperamos a que acabe el use case y devuelva el storage
-                job.join()
-                _uiState.update { it.copy(storage = it.storage.copy(regalos = regalosList)) }
-            } catch (_: Exception) {
-                _uiState.update { it.copy(internetConnection = false) }
-            }
-        }
-
-    }
-
-    fun getMaterialStorage() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                var materialList = emptyList<Material>()
-                val job = launch {
-                    materialList = getMaterialStorageUseCase().toList()
-                }
-                //con esto esperamos a que acabe el use case y devuelva el storage
-                job.join()
-                _uiState.update { it.copy(storage = it.storage.copy(material = materialList)) }
-            } catch (_: Exception) {
-                _uiState.update { it.copy(internetConnection = false) }
-            }
-        }
-
-    }
 
     @Composable
     fun CircularProgressCountdown() {

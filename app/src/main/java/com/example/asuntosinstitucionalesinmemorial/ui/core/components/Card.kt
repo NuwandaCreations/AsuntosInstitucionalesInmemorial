@@ -2,6 +2,7 @@ package com.example.asuntosinstitucionalesinmemorial.ui.core.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,11 +22,12 @@ import androidx.compose.ui.unit.dp
 import com.example.asuntosinstitucionalesinmemorial.R
 
 @Composable
-fun Card(material: String, category: String, photo: Int) {
+fun Card(material: String, category: String, photo: Int, onItemClick: (String) -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp, 5.dp)
+            .clickable { onItemClick(material) }
             .border(
                 width = 0.6.dp,
                 color = colorResource(R.color.white),

@@ -9,7 +9,10 @@ class GetMaterialStorageUseCase(val repository: FirebaseRepository) {
     suspend operator fun invoke(): List<Material> {
         val jsonString = repository.getMaterialStorageJSON().trimIndent()
         val listType = object : TypeToken<List<Material>>() {}.type
-        val materialList: List<Material> = Gson().fromJson(jsonString, listType)
-        return materialList
+        return if (jsonString.isNotEmpty()) {
+            Gson().fromJson(jsonString, listType)
+        } else {
+            emptyList()
+        }
     }
 }
