@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">AsuntosInstitucionalesInmemorial</string>
+
+    <string name="database_error">Error al actualizar datos desde JSON</string>
+    <string name="database_success">Datos actualizados desde JSON</string>
+    <string name="save_error">Error al guardar los datos</string>
+    <string name="save_success">Datos guardados correctamente</string>
+    <string name="firestore_error">Error al actualizar datos en Firestore</string>
+    <string name="firestore_success">Datos actualizados en Firestore</string>
+    <string name="error">Error</string>
+
+    <string name="motto_first">Por España y por el Rey</string>
+    <string name="motto_second">Adelante Inmemorial</string>
+
+    <string name="regalos_button">"Actualizar Regalos desde JSON Firebase"</string>
+    <string name="material_button">"Actualizar Material desde JSON Firebase"</string>
+    <string name="eventos_button">"Actualizar Eventos desde JSON Firebase"</string>
 </resources>

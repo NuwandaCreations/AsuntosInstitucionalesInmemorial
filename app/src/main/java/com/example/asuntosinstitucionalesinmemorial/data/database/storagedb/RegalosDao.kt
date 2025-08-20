@@ -18,4 +18,7 @@ interface RegalosDao {
 
     @Delete
     suspend fun deleteRegalos(vararg regalos: RegalosEntity)
+
+    @Query("DELETE FROM RegalosEntity")
+    suspend fun deleteAllRegalos()
 }

@@ -1,7 +1,8 @@
 package com.example.asuntosinstitucionalesinmemorial.di
 
 import com.example.asuntosinstitucionalesinmemorial.ui.home.HomeViewModel
-import com.example.asuntosinstitucionalesinmemorial.ui.protocolstorage.ProtocolStorageViewModel
+import com.example.asuntosinstitucionalesinmemorial.ui.materialstorage.MaterialStorageViewModel
+import com.example.asuntosinstitucionalesinmemorial.ui.regalosstorage.RegalosStorageViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -10,9 +11,8 @@ val uiDomain = module {
 }
 
 val viewModelModule = module {
-    viewModel { HomeViewModel() }
     viewModel {
-        ProtocolStorageViewModel(
+        HomeViewModel(
             get(),
             get(),
             get(),
@@ -20,6 +20,24 @@ val viewModelModule = module {
             get(),
             get(),
             get(),
+            get(),
+            get(),
+            get(),
+            get()
+        )
+    }
+    viewModel {
+        RegalosStorageViewModel(
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
+        )
+    }
+    viewModel {
+        MaterialStorageViewModel(
             get(),
             get(),
             get(),
