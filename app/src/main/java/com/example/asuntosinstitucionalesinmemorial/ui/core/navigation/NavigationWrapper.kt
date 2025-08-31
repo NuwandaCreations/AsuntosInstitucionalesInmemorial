@@ -7,8 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.asuntosinstitucionalesinmemorial.ui.editstorage.EditStorageScreen
 import com.example.asuntosinstitucionalesinmemorial.ui.events.EventsScreen
+import com.example.asuntosinstitucionalesinmemorial.ui.home.ButtonAction
 
 import com.example.asuntosinstitucionalesinmemorial.ui.home.HomeScreen
 import com.example.asuntosinstitucionalesinmemorial.ui.materialstorage.MaterialStorageScreen
@@ -25,19 +27,38 @@ fun NavigationWrapper() {
             startDestination = Home,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable<Home> { HomeScreen(navigateBack = { navController.popBackStack() }) }
+            composable<Home> { HomeScreen() }
             composable<RegalosStorage> {
                 RegalosStorageScreen(
-                    goToDetail = { navController.navigate(StorageDetail) },
+                    goToDetail = {
+                        navController.navigate(
+                            StorageDetail(
+                                objeto = it,
+                                type = ButtonAction.REGALOS
+                            )
+                        )
+                    },
                     goToEdit = { navController.navigate(EditStorage) }
                 )
             }
             composable<MaterialStorage> {
-                MaterialStorageScreen(goToDetail = {
-                    navController.navigate(StorageDetail)
-                })
+                MaterialStorageScreen(
+                    goToDetail = {
+                        navController.navigate(
+                            StorageDetail(
+                                objeto = it,
+                                type = ButtonAction.MATERIAL
+                            )
+                        )
+                    })
             }
-            composable<StorageDetail> { StorageDetailScreen(navigateBack = { navController.popBackStack() }) }
+            composable<StorageDetail> { navBackStackEntry ->
+                val detail = navBackStackEntry.toRoute<StorageDetail>()
+                StorageDetailScreen(
+                    objeto = detail.objeto,
+                    type = detail.type,
+                    navigateBack = { navController.popBackStack() })
+            }
             composable<EditStorage> { EditStorageScreen() }
             composable<Events> { EventsScreen(navController = navController) }
         }

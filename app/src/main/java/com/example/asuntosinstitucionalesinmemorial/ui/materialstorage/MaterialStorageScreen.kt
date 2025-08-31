@@ -27,20 +27,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.example.asuntosinstitucionalesinmemorial.R
 import com.example.asuntosinstitucionalesinmemorial.ui.core.components.Card
+import com.example.asuntosinstitucionalesinmemorial.ui.theme.Typography
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MaterialStorageScreen(
     materialStorageViewModel: MaterialStorageViewModel = koinViewModel(),
-    goToDetail: () -> Unit
+    goToDetail: (String) -> Unit
 ) {
     val uiState by materialStorageViewModel.uiState.collectAsStateWithLifecycle()
     var search by rememberSaveable { mutableStateOf("") }
@@ -55,9 +52,7 @@ fun MaterialStorageScreen(
             Text(
                 text = "Inventario material protocolo",
                 modifier = Modifier.padding(top = 10.dp),
-                color = Color.White,
-                fontSize = 20.sp,
-                fontFamily = FontFamily(Font(R.font.inknut_antiqua_semibold))
+                style = Typography.titleMedium
             )
             OutlinedTextField(
                 value = search,
@@ -103,9 +98,9 @@ fun MaterialStorageScreen(
                 flingBehavior = ScrollableDefaults.flingBehavior(),
                 state = rememberLazyListState(),
             ) {
-                items(uiState.storage.material) {
-                    Card("${it.objeto}", "${it.categoria}", R.drawable.ic_present) {
-                        goToDetail()
+                items(uiState.storage.material) { material ->
+                    Card("${material.objeto}", "${material.categoria}", R.drawable.ic_present) {
+                        goToDetail(material.objeto.toString())
                     }
                 }
             }

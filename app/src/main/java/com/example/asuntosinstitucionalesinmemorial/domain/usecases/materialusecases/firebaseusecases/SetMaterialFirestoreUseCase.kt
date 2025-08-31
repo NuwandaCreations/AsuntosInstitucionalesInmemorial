@@ -1,4 +1,4 @@
-package com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases
+package com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.firebaseusecases
 
 import com.example.asuntosinstitucionalesinmemorial.domain.FirebaseRepository
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Material

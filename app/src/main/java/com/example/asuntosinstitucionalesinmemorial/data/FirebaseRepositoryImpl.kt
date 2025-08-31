@@ -8,6 +8,7 @@ import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.MAT
 import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.MATERIAL_JSON
 import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.REGALOS
 import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.REGALOS_JSON
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.storage.FirebaseStorage
@@ -45,6 +46,11 @@ class FirebaseRepositoryImpl(
         }
     }
 
+    override suspend fun getPhotosStorage(objeto: String): String {
+        val url = firebaseStorage.reference.child("$objeto.jpg").downloadUrl.await()
+        return url.toString()
+    }
+
     override suspend fun setRegaloFirestore(regalo: Regalos) {
         firestore.collection(REGALOS).document("${regalo.objeto}").set(regalo)
     }
@@ -69,6 +75,22 @@ class FirebaseRepositoryImpl(
             }
     }
 
+    override fun getRegaloByIdFirestore(regalo: String): Flow<Regalos> {
+        return firestore.collection(REGALOS).document(regalo)
+            .snapshots()
+            .map { snapshot ->
+                snapshot.toObject(Regalos::class.java) ?: Regalos()
+            }
+    }
+
+    override fun getMaterialByIdFirestore(material: String): Flow<Material> {
+        return firestore.collection(MATERIAL).document(material)
+            .snapshots()
+            .map { snapshot ->
+                snapshot.toObject(Material::class.java) ?: Material()
+            }
+    }
+
     override suspend fun deleteRegalosFirestore(regalos: Regalos) {
         firestore.collection(REGALOS).document("${regalos.objeto}").delete()
     }
@@ -77,31 +99,29 @@ class FirebaseRepositoryImpl(
         firestore.collection(MATERIAL).document("${material.objeto}").delete()
     }
 
-    override suspend fun deleteAllRegalosFirestore() {
-        firestore.collection(REGALOS)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                for (document in querySnapshot.documents) {
-                    document.reference.delete()
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.e("Firestore", "Error eliminando regalos: ", exception)
-            }
+    override suspend fun updateRegalosFirestore(regalosList: List<Regalos>) {
+        val collection = firestore.collection(REGALOS)
+        val snapshot = collection.get().await()
+        val deleteDocs = snapshot.documents.map { documentSnapshot ->
+            collection.document(documentSnapshot.id).delete()
+        }
+        Tasks.whenAll(deleteDocs).await()
+
+        regalosList.forEach {
+            setRegaloFirestore(it)
+        }
     }
 
-    override suspend fun deleteAllMaterialFirestore() {
-        firestore.collection(MATERIAL)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                for (document in querySnapshot.documents) {
-                    document.reference.delete()
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.e("Firestore", "Error eliminando material: ", exception)
-            }
+    override suspend fun updateMaterialFirestore(materialList: List<Material>) {
+        val collection = firestore.collection(MATERIAL)
+        val snapshot = collection.get().await()
+        val deleteDocs = snapshot.documents.map { documentSnapshot ->
+            collection.document(documentSnapshot.id).delete()
+        }
+        Tasks.whenAll(deleteDocs).await()
+
+        materialList.forEach {
+            setMaterialFirestore(it)
+        }
     }
-
-
 }

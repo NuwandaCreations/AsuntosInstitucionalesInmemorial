@@ -10,17 +10,18 @@ data class MaterialEntity(
     @PrimaryKey
     val objeto: String = EMPTY_NAME,
     val cantidad: Int?,
+    val categoria: String?,
     val localizacion: String?,
     val observaciones: String?,
     val foto: String?
 )
-//TODO LA CATEGORIA Y OBSERVACIONES/REQUISITO HAY QUE AJUSTAR
+
 fun MaterialEntity.toDomain(): Material {
     return Material(
-        null,
-        cantidad,
-        localizacion,
-        objeto,
-        observaciones
+        categoria = categoria,
+        cantidad = cantidad,
+        localizacion = localizacion,
+        objeto = objeto,
+        observaciones = observaciones
     )
 }

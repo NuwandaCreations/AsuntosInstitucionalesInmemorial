@@ -1,4 +1,4 @@
-package com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases
+package com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.roomusecases
 
 import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.model.RegalosEntity
 import com.example.asuntosinstitucionalesinmemorial.domain.Repository

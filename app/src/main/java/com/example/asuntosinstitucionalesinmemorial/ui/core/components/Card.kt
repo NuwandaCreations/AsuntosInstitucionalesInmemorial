@@ -47,7 +47,8 @@ fun Card(material: String, category: String, photo: Int, onItemClick: (String) -
                 )
                 Text(
                     text = category,
-                    modifier = Modifier.padding(horizontal = 15.dp, vertical = 5.dp)
+                    modifier = Modifier.padding(horizontal = 15.dp, vertical = 5.dp),
+                    color = colorResource(R.color.white_transparent)
                 )
             }
             Image(

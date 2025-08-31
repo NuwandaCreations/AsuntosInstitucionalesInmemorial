@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.asuntosinstitucionalesinmemorial.R
+import com.example.asuntosinstitucionalesinmemorial.ui.core.components.BasicDialog
 import com.example.asuntosinstitucionalesinmemorial.ui.core.components.MyButton
 import com.example.asuntosinstitucionalesinmemorial.ui.core.components.MySnackbar
 import com.example.asuntosinstitucionalesinmemorial.ui.core.components.ProgressIndicator
@@ -34,12 +35,12 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = koinViewModel(),
-    navigateBack: () -> Unit
+    homeViewModel: HomeViewModel = koinViewModel()
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
+    var buttonAction: ButtonAction = ButtonAction.REGALOS
 
     Scaffold(
         snackbarHost = {
@@ -52,6 +53,32 @@ fun HomeScreen(
         },
         containerColor = colorResource(R.color.onPrimaryBackground)
     ) { padding ->
+        if (uiState.isDialogShown) {
+            CreateDialog(
+                buttonAction,
+                confirmAction = {
+                    homeViewModel.apply {
+                        when (buttonAction) {
+                            ButtonAction.REGALOS -> {
+                                getRegalosStorage()
+                            }
+
+                            ButtonAction.MATERIAL -> {
+                                getMaterialStorage()
+                            }
+
+                            ButtonAction.EVENTOS -> {
+                                TODO()
+                            }
+                        }
+                        showDialog(false)
+                    }
+                },
+                dismissAction = {
+                    homeViewModel.showDialog(false)
+                }
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -60,10 +87,18 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             FrontPage()
-            MyButton(stringResource(R.string.regalos_button)) { homeViewModel.getRegalosStorage() }
-            MyButton(stringResource(R.string.material_button)) { homeViewModel.getMaterialStorage() }
             MyButton(stringResource(R.string.eventos_button)) {
                 //TODO ACTUALIZAR EVENTOS DEL EXCEL JSON
+                buttonAction = ButtonAction.EVENTOS
+                homeViewModel.showDialog(true)
+            }
+            MyButton(stringResource(R.string.regalos_button)) {
+                buttonAction = ButtonAction.REGALOS
+                homeViewModel.showDialog(true)
+            }
+            MyButton(stringResource(R.string.material_button)) {
+                buttonAction = ButtonAction.MATERIAL
+                homeViewModel.showDialog(true)
             }
         }
 
@@ -75,6 +110,34 @@ fun HomeScreen(
             homeViewModel.showSnackBar(snackBarHostState, stringResource(uiState.snackbarText!!))
         }
     }
+}
+
+@Composable
+fun CreateDialog(buttonAction: ButtonAction, confirmAction: () -> Unit, dismissAction: () -> Unit) {
+    var title: Int?
+    var text: Int?
+    when (buttonAction) {
+        ButtonAction.REGALOS -> {
+            title = R.string.regalos_dialog_title
+            text = R.string.regalos_dialog_text
+        }
+
+        ButtonAction.MATERIAL -> {
+            title = R.string.material_dialog_title
+            text = R.string.material_dialog_text
+        }
+
+        ButtonAction.EVENTOS -> {
+            title = R.string.eventos_dialog_title
+            text = R.string.eventos_dialog_text
+        }
+    }
+    BasicDialog(
+        title = stringResource(title),
+        text = stringResource(text),
+        confirmButton = { confirmAction() },
+        dismissButton = { dismissAction() }
+    )
 }
 
 @Composable

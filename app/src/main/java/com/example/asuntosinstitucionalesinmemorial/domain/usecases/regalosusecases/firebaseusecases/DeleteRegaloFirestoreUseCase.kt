@@ -1,4 +1,4 @@
-package com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases
+package com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firebaseusecases
 
 import com.example.asuntosinstitucionalesinmemorial.domain.FirebaseRepository
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
