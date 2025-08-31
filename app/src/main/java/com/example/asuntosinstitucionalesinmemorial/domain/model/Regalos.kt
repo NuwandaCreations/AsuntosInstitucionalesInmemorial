@@ -4,7 +4,7 @@ import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.mode
 import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.EMPTY_NAME
 
 data class Regalos(
-    val cantidad: Int? = null,
+    var cantidad: Int? = null,
     val categoria: String? = null,
     val detalleLocalizacion: String? = null,
     val localizacion: String? = null,

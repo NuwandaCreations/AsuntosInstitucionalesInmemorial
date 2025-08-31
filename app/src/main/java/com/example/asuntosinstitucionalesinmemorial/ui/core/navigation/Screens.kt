@@ -1,5 +1,6 @@
 package com.example.asuntosinstitucionalesinmemorial.ui.core.navigation
 
+import com.example.asuntosinstitucionalesinmemorial.ui.home.ButtonAction
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -23,7 +24,7 @@ object MaterialStorage : AppScreen {
 }
 
 @Serializable
-object StorageDetail : AppScreen {
+data class StorageDetail(val objeto: String, val type: ButtonAction) : AppScreen {
     override val route = "StorageDetail"
 }
 

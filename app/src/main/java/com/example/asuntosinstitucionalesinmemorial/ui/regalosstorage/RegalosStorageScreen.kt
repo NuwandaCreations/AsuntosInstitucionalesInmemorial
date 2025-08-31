@@ -39,12 +39,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.asuntosinstitucionalesinmemorial.R
 import com.example.asuntosinstitucionalesinmemorial.ui.core.components.Card
+import com.example.asuntosinstitucionalesinmemorial.ui.theme.Typography
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun RegalosStorageScreen(
     regalosStorageViewModel: RegalosStorageViewModel = koinViewModel(),
-    goToDetail: () -> Unit,
+    goToDetail: (String) -> Unit,
     goToEdit: () -> Unit
 ) {
     val uiState by regalosStorageViewModel.uiState.collectAsStateWithLifecycle()
@@ -68,9 +69,7 @@ fun RegalosStorageScreen(
             Text(
                 text = "Inventario regalos protocolo",
                 modifier = Modifier.padding(top = 10.dp),
-                color = Color.White,
-                fontSize = 20.sp,
-                fontFamily = FontFamily(Font(R.font.inknut_antiqua_semibold))
+                style = Typography.titleMedium
             )
             OutlinedTextField(
                 value = search,
@@ -116,9 +115,9 @@ fun RegalosStorageScreen(
                 flingBehavior = ScrollableDefaults.flingBehavior(),
                 state = rememberLazyListState(),
             ) {
-                items(uiState.storage.regalos) {
-                    Card("${it.objeto}", "${it.categoria}", R.drawable.ic_present) {
-                        goToDetail()
+                items(uiState.storage.regalos) { regalo ->
+                    Card("${regalo.objeto}", "${regalo.categoria}", R.drawable.ic_present) {
+                        goToDetail(regalo.objeto.toString())
                     }
                 }
             }

@@ -30,6 +30,11 @@ class RepositoryImpl(
         regalosDao.deleteAllRegalos()
     }
 
+    override suspend fun updateRegalosDB(vararg regalos: Regalos) {
+        regalosDao.deleteAllRegalos()
+        regalosDao.addRegalos(*regalos.map { it.toData() }.toTypedArray())
+    }
+
     override suspend fun addMaterialDB(vararg material: Material) {
         materialDao.addMaterial(*material.map { it.toData() }.toTypedArray())
     }
@@ -46,5 +51,8 @@ class RepositoryImpl(
         materialDao.deleteAllMaterial()
     }
 
-
+    override suspend fun updateMaterialDB(vararg material: Material) {
+        materialDao.deleteAllMaterial()
+        materialDao.addMaterial(*material.map { it.toData() }.toTypedArray())
+    }
 }

@@ -1,18 +1,28 @@
 <resources>
     <string name="app_name">AsuntosInstitucionalesInmemorial</string>
 
+    <string name="error">Error</string>
     <string name="database_error">Error al actualizar datos desde JSON</string>
     <string name="database_success">Datos actualizados desde JSON</string>
     <string name="save_error">Error al guardar los datos</string>
     <string name="save_success">Datos guardados correctamente</string>
     <string name="firestore_error">Error al actualizar datos en Firestore</string>
+    <string name="json_error">Error al actualizar: el archivo JSON está vacío</string>
     <string name="firestore_success">Datos actualizados en Firestore</string>
-    <string name="error">Error</string>
+    <string name="search_object_error">Error al recuperar el objeto seleccionado</string>
+    <string name="type_object_error">No se reconoce el tipo de objeto seleccionado</string>
 
     <string name="motto_first">Por España y por el Rey</string>
     <string name="motto_second">Adelante Inmemorial</string>
 
-    <string name="regalos_button">"Actualizar Regalos desde JSON Firebase"</string>
-    <string name="material_button">"Actualizar Material desde JSON Firebase"</string>
-    <string name="eventos_button">"Actualizar Eventos desde JSON Firebase"</string>
+    <string name="regalos_button">Actualizar Regalos desde JSON Firebase</string>
+    <string name="material_button">Actualizar Material desde JSON Firebase</string>
+    <string name="eventos_button">Actualizar Eventos desde JSON Firebase</string>
+    <string name="regalos_dialog_title">Eliminar y actualizar regalos</string>
+    <string name="material_dialog_title">Eliminar y actualizar material</string>
+    <string name="eventos_dialog_title">Eliminar y actualizar eventos</string>
+    <string name="regalos_dialog_text">¿Está seguro que quiere eliminar el listado de regalos actual y subir el nuevo listado desde el JSON de Firebase Storage?</string>
+    <string name="material_dialog_text">¿Está seguro que quiere eliminar el listado de material actual y subir el nuevo listado desde el JSON de Firebase Storage?</string>
+    <string name="eventos_dialog_text">¿Está seguro que quiere eliminar el listado de eventos actual y subir el nuevo listado desde el JSON de Firebase Storage?</string>
+
 </resources>
