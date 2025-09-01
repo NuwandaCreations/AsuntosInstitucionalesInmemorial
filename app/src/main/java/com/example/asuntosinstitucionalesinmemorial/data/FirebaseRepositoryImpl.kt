@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ListResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
@@ -49,6 +50,10 @@ class FirebaseRepositoryImpl(
     override suspend fun getPhotosStorage(objeto: String): String {
         val url = firebaseStorage.reference.child("$objeto.jpg").downloadUrl.await()
         return url.toString()
+    }
+
+    override suspend fun getAllPhotosStorage(): ListResult {
+        return firebaseStorage.reference.listAll().await()
     }
 
     override suspend fun setRegaloFirestore(regalo: Regalos) {

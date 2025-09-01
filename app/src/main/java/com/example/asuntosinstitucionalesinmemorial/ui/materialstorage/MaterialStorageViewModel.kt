@@ -7,12 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.model.toDomain
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Material
 import com.example.asuntosinstitucionalesinmemorial.domain.model.ProtocolStorage
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.roomusecases.AddMaterialDBUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.roomusecases.DeleteMaterialDBUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetAllPhotosStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.firebaseusecases.DeleteMaterialFirestoreUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.roomusecases.GetMaterialDBUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.firebaseusecases.GetMaterialFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.firebaseusecases.SetMaterialFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.roomusecases.AddMaterialDBUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.roomusecases.DeleteMaterialDBUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.roomusecases.GetMaterialDBUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +28,7 @@ class MaterialStorageViewModel(
     val setMaterialFirestoreUseCase: SetMaterialFirestoreUseCase,
     val getMaterialFirestoreUseCase: GetMaterialFirestoreUseCase,
     val deleteMaterialFirestoreUseCase: DeleteMaterialFirestoreUseCase,
+    val getAllPhotosStorageUseCase: GetAllPhotosStorageUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MaterialStorageUiState())
     val uiState: StateFlow<MaterialStorageUiState> = _uiState
@@ -103,6 +105,17 @@ class MaterialStorageViewModel(
         }
     }
 
+    fun getAllPhotos() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val urls = getAllPhotosStorageUseCase()
+                _uiState.update { it.copy(photoUrl = urls) }
+            } catch (_: Exception) {
+
+            }
+        }
+    }
+
     @Composable
     fun CircularProgressCountdown() {
         LaunchedEffect("circularProgress") {
@@ -115,6 +128,7 @@ class MaterialStorageViewModel(
 data class MaterialStorageUiState(
     val storage: ProtocolStorage = ProtocolStorage(),
     val internetConnection: Boolean = true,
+    val photoUrl: MutableMap<String, String> = mutableMapOf(),
     val error: String = "Error",
     val progressVisibility: Boolean = true
 )

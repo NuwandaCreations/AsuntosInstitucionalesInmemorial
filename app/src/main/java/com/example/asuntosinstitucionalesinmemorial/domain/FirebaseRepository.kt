@@ -2,12 +2,14 @@ package com.example.asuntosinstitucionalesinmemorial.domain
 
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Material
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
+import com.google.firebase.storage.ListResult
 import kotlinx.coroutines.flow.Flow
 
 interface FirebaseRepository {
     suspend fun getRegalosStorageJSON(): String
     suspend fun getMaterialStorageJSON(): String
     suspend fun getPhotosStorage(objeto: String): String
+    suspend fun getAllPhotosStorage(): ListResult
     suspend fun setRegaloFirestore(regalo: Regalos)
     suspend fun setMaterialFirestore(material: Material)
     fun getRegalosFirestore(): Flow<List<Regalos>>
