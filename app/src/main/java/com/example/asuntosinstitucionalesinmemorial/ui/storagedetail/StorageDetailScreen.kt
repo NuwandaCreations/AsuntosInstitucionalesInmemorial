@@ -2,15 +2,19 @@ package com.example.asuntosinstitucionalesinmemorial.ui.storagedetail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -173,7 +177,9 @@ fun CreateView(
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
@@ -187,6 +193,11 @@ fun CreateView(
                 onClick = { plusNumber() },
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = colorResource(R.color.onPrimary)
+                ),
+                modifier = Modifier.border(
+                    width = 2.dp,
+                    color = Color.White,
+                    shape = RoundedCornerShape(200.dp)
                 )
             ) {
                 Text(
@@ -196,11 +207,18 @@ fun CreateView(
                     fontWeight = FontWeight.Bold
                 )
             }
+            Spacer(modifier = Modifier.width(10.dp))
             IconButton(
                 onClick = { minusNumber() },
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = colorResource(R.color.onPrimary)
-                )
+                ),
+                modifier = Modifier
+                    .border(
+                        width = 2.dp,
+                        color = Color.White,
+                        shape = RoundedCornerShape(200.dp)
+                    )
             ) {
                 Text(
                     "-",

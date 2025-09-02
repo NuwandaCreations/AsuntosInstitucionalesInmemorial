@@ -1,20 +1,18 @@
 package com.example.asuntosinstitucionalesinmemorial.ui.regalosstorage
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.model.toDomain
 import com.example.asuntosinstitucionalesinmemorial.domain.model.ProtocolStorage
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.roomusecases.AddRegalosDBUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetAllPhotosStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firebaseusecases.DeleteRegaloFirestoreUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.roomusecases.DeleteRegalosDBUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.roomusecases.GetRegalosDBUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firebaseusecases.GetRegalosFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firebaseusecases.SetRegaloFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.roomusecases.AddRegalosDBUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.roomusecases.DeleteRegalosDBUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.roomusecases.GetRegalosDBUseCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -26,7 +24,8 @@ class RegalosStorageViewModel(
     val deleteRegalosDBUseCase: DeleteRegalosDBUseCase,
     val setRegaloFirestoreUseCase: SetRegaloFirestoreUseCase,
     val getRegalosFirestoreUseCase: GetRegalosFirestoreUseCase,
-    val deleteRegaloFirestoreUseCase: DeleteRegaloFirestoreUseCase
+    val deleteRegaloFirestoreUseCase: DeleteRegaloFirestoreUseCase,
+    val getAllPhotosStorageUseCase: GetAllPhotosStorageUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RegalosStorageUiState())
     val uiState: StateFlow<RegalosStorageUiState> = _uiState
@@ -77,6 +76,7 @@ class RegalosStorageViewModel(
                             storage = it.storage.copy(regalos = regalos)
                         )
                     }
+                    addRegalosToDB(*regalos.toTypedArray())
                 }
             } catch (_: Exception) {
                 getRegalosFromDB()
@@ -104,12 +104,14 @@ class RegalosStorageViewModel(
         }
     }
 
+    fun getAllPhotos() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val urls = getAllPhotosStorageUseCase()
+                _uiState.update { it.copy(photoUrl = urls) }
+            } catch (_: Exception) {
 
-    @Composable
-    fun CircularProgressCountdown() {
-        LaunchedEffect("circularProgress") {
-            delay(20000)
-            _uiState.update { it.copy(progressVisibility = false) }
+            }
         }
     }
 }
@@ -117,6 +119,6 @@ class RegalosStorageViewModel(
 data class RegalosStorageUiState(
     val storage: ProtocolStorage = ProtocolStorage(),
     val internetConnection: Boolean = true,
+    val photoUrl: MutableMap<String, String> = mutableMapOf(),
     val error: String = "Error",
-    val progressVisibility: Boolean = true
 )

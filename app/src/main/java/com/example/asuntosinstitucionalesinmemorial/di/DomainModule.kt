@@ -1,6 +1,7 @@
 package com.example.asuntosinstitucionalesinmemorial.di
 
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.GetEventsStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetAllPhotosStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetMaterialStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetPhotosStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetRegalosStorageUseCase
@@ -55,4 +56,5 @@ val domainModule = module {
     single { GetMaterialStorageUseCase(get()) }
     single { GetEventsStorageUseCase(get()) }
     single { GetPhotosStorageUseCase(get()) }
+    single { GetAllPhotosStorageUseCase(get()) }
 }

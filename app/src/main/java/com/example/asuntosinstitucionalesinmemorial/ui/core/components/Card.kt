@@ -16,13 +16,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.asuntosinstitucionalesinmemorial.R
 
 @Composable
-fun Card(material: String, category: String, photo: Int, onItemClick: (String) -> Unit) {
+fun Card(material: String, category: String, photoUrl: String, onItemClick: (String) -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -51,14 +53,26 @@ fun Card(material: String, category: String, photo: Int, onItemClick: (String) -
                     color = colorResource(R.color.white_transparent)
                 )
             }
-            Image(
-                painter = painterResource(photo),
-                contentDescription = "Material",
-                modifier = Modifier
-                    .size(90.dp)
-                    .padding(7.dp)
-                    .weight(1f)
-            )
+            if (photoUrl.isNotEmpty()) {
+                AsyncImage(
+                    model = photoUrl,
+                    contentDescription = "photo",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .size(90.dp)
+                        .padding(7.dp)
+                        .weight(1f)
+                )
+            } else {
+                Image(
+                    painter = painterResource(R.drawable.ic_present),
+                    contentDescription = "Material",
+                    modifier = Modifier
+                        .size(90.dp)
+                        .padding(7.dp)
+                        .weight(1f)
+                )
+            }
         }
     }
 }
