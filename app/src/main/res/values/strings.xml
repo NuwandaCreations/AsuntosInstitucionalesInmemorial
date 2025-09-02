@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AsuntosInstitucionalesInmemorial</string>
+    <string name="app_name">S-5ync</string>
 
     <string name="error">Error</string>
     <string name="database_error">Error al actualizar datos desde JSON</string>
