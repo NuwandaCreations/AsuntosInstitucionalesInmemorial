@@ -8,7 +8,6 @@ import com.example.asuntosinstitucionalesinmemorial.R
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Material
 import com.example.asuntosinstitucionalesinmemorial.domain.model.ProtocolStorage
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.GetEventsStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetMaterialStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetRegalosStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.firebaseusecases.UpdateMaterialFirestoreUseCase
@@ -24,7 +23,6 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     val getRegalosStorageUseCase: GetRegalosStorageUseCase,
     val getMaterialStorageUseCase: GetMaterialStorageUseCase,
-    val getEventsStorageUseCase: GetEventsStorageUseCase,
     val updateRegalosFirestoreUseCase: UpdateRegalosFirestoreUseCase,
     val updateMaterialFirestoreUseCase: UpdateMaterialFirestoreUseCase,
     val updateRegalosDBUseCase: UpdateRegalosDBUseCase,
@@ -32,10 +30,6 @@ class HomeViewModel(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState
-
-    fun getEventsStorage() {
-        //TODO
-    }
 
     fun getRegalosStorage() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -153,5 +147,4 @@ data class HomeUiState(
 enum class ButtonAction {
     REGALOS,
     MATERIAL,
-    EVENTOS
 }

@@ -17,8 +17,10 @@
     <string name="all">Todos</string>
     <string name="placeholder_regalos">Nombre del regalo…</string>
     <string name="placeholder_material">Nombre del material…</string>
+    <string name="placeholder_evento">Nombre del invitado…</string>
     <string name="regalos_screen_title">Inventario regalos protocolo</string>
     <string name="material_screen_title">Inventario material protocolo</string>
+    <string name="events_screen_title">Eventos en curso</string>
 
     <string name="regalos_button">Actualizar Regalos desde JSON Firebase</string>
     <string name="material_button">Actualizar Material desde JSON Firebase</string>

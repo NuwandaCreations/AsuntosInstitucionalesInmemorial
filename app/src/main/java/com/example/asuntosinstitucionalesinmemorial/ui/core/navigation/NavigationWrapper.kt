@@ -9,6 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.asuntosinstitucionalesinmemorial.ui.editstorage.EditStorageScreen
+import com.example.asuntosinstitucionalesinmemorial.ui.events.EventDetailScreen
+import com.example.asuntosinstitucionalesinmemorial.ui.events.EventGuestsScreen
 import com.example.asuntosinstitucionalesinmemorial.ui.events.EventsScreen
 import com.example.asuntosinstitucionalesinmemorial.ui.home.ButtonAction
 
@@ -60,7 +62,26 @@ fun NavigationWrapper() {
                     navigateBack = { navController.popBackStack() })
             }
             composable<EditStorage> { EditStorageScreen() }
-            composable<Events> { EventsScreen(navController = navController) }
+            composable<Events> {
+                EventsScreen(
+                    goToEventDetail = { navController.navigate(EventDetail(event = it)) },
+                    goToEventGuests = { navController.navigate(EventGuests(event = it)) }
+                )
+            }
+            composable<EventDetail> { navBackStackEntry ->
+                val event = navBackStackEntry.toRoute<EventDetail>()
+                EventDetailScreen(
+                    navController = navController,
+                    event = event.event
+                )
+            }
+            composable<EventGuests> { navBackStackEntry ->
+                val event = navBackStackEntry.toRoute<EventGuests>()
+                EventGuestsScreen(
+                    navController = navController,
+                    event = event.event
+                )
+            }
         }
     }
 }

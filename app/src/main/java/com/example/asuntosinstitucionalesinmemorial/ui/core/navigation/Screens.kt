@@ -37,3 +37,13 @@ object EditStorage : AppScreen {
 object Events : AppScreen {
     override val route = "Events"
 }
+
+@Serializable
+data class EventDetail(val event: String) : AppScreen {
+    override val route = "EventDetail"
+}
+
+@Serializable
+data class EventGuests(val event: String) : AppScreen {
+    override val route = "EventGuests"
+}

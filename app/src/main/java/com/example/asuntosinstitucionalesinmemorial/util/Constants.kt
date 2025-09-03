@@ -8,6 +8,7 @@ class Constants {
         const val EMPTY_NAME = "SIN NOMBRE"
         const val REGALOS = "regalos"
         const val MATERIAL = "material"
+        const val EVENTOS = "eventos"
         const val STORAGE = "storage"
         const val REGALOS_JSON = "0-otros/regalos.json"
         const val MATERIAL_JSON = "0-otros/material.json"

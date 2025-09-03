@@ -1,9 +1,11 @@
 package com.example.asuntosinstitucionalesinmemorial.data
 
 import android.util.Log
+import com.example.asuntosinstitucionalesinmemorial.data.network.response.EventsResponse
 import com.example.asuntosinstitucionalesinmemorial.domain.FirebaseRepository
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Material
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
+import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.EVENTOS
 import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.MATERIAL
 import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.MATERIAL_JSON
 import com.example.asuntosinstitucionalesinmemorial.util.Constants.Companion.REGALOS
@@ -56,6 +58,10 @@ class FirebaseRepositoryImpl(
         return firebaseStorage.reference.listAll().await()
     }
 
+    override suspend fun getEventGuestsStorage(event: String): String {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun setRegaloFirestore(regalo: Regalos) {
         firestore.collection(REGALOS).document("${regalo.objeto}").set(regalo)
     }
@@ -77,6 +83,22 @@ class FirebaseRepositoryImpl(
             .snapshots()
             .map { snapshot ->
                 snapshot.toObjects(Material::class.java)
+            }
+    }
+
+    override fun getEventsFirestore(): Flow<List<EventsResponse>> {
+        return firestore.collection(EVENTOS)
+            .snapshots()
+            .map { snapshot ->
+                snapshot.toObjects(EventsResponse::class.java)
+            }
+    }
+
+    override fun getEventByIdFirestore(event: String): Flow<EventsResponse> {
+        return firestore.collection(EVENTOS).document(event)
+            .snapshots()
+            .map { snapshot ->
+                snapshot.toObject(EventsResponse::class.java) ?: EventsResponse()
             }
     }
 
