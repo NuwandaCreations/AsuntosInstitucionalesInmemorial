@@ -1,7 +1,9 @@
 package com.example.asuntosinstitucionalesinmemorial.ui.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -66,10 +68,6 @@ fun HomeScreen(
                             ButtonAction.MATERIAL -> {
                                 getMaterialStorage()
                             }
-
-                            ButtonAction.EVENTOS -> {
-                                TODO()
-                            }
                         }
                         showDialog(false)
                     }
@@ -81,26 +79,61 @@ fun HomeScreen(
         }
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .verticalScroll(scrollState)
-                .padding(padding),
+                .padding(vertical = 90.dp, horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            FrontPage()
-            MyButton(stringResource(R.string.eventos_button)) {
-                //TODO ACTUALIZAR EVENTOS DEL EXCEL JSON
-                buttonAction = ButtonAction.EVENTOS
-                homeViewModel.showDialog(true)
+//            FrontPage()
+//            MyButton(stringResource(R.string.regalos_button)) {
+//                buttonAction = ButtonAction.REGALOS
+//                homeViewModel.showDialog(true)
+//            }
+//            MyButton(stringResource(R.string.material_button)) {
+//                buttonAction = ButtonAction.MATERIAL
+//                homeViewModel.showDialog(true)
+//            }
+            Box(
+                modifier = Modifier
+                    .weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.motto_first),
+                    textAlign = TextAlign.Center,
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily(Font(R.font.inknut_antiqua_semibold)),
+                    color = colorResource(R.color.white),
+                )
             }
-            MyButton(stringResource(R.string.regalos_button)) {
-                buttonAction = ButtonAction.REGALOS
-                homeViewModel.showDialog(true)
-            }
-            MyButton(stringResource(R.string.material_button)) {
-                buttonAction = ButtonAction.MATERIAL
-                homeViewModel.showDialog(true)
+
+            Image(
+                painter = painterResource(R.drawable.ic_rinf1),
+                contentDescription = "rinf1",
+                Modifier
+                    .fillMaxSize()
+                    .padding(20.dp)
+                    .weight(3f)
+            )
+            Box(
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+                    .weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.motto_second),
+                    textAlign = TextAlign.Center,
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily(Font(R.font.inknut_antiqua_semibold)),
+                    color = colorResource(R.color.white)
+                )
             }
         }
+
+
 
         if (uiState.isLoading) {
             ProgressIndicator()
@@ -126,11 +159,6 @@ fun CreateDialog(buttonAction: ButtonAction, confirmAction: () -> Unit, dismissA
             title = R.string.material_dialog_title
             text = R.string.material_dialog_text
         }
-
-        ButtonAction.EVENTOS -> {
-            title = R.string.eventos_dialog_title
-            text = R.string.eventos_dialog_text
-        }
     }
     BasicDialog(
         title = stringResource(title),
@@ -140,31 +168,31 @@ fun CreateDialog(buttonAction: ButtonAction, confirmAction: () -> Unit, dismissA
     )
 }
 
-@Composable
-fun FrontPage() {
-    Text(
-        text = stringResource(R.string.motto_first),
-        textAlign = TextAlign.Center,
-        fontSize = 25.sp,
-        fontWeight = FontWeight.Bold,
-        fontFamily = FontFamily(Font(R.font.inknut_antiqua_semibold)),
-        color = colorResource(R.color.white),
-        modifier = Modifier.padding(bottom = 10.dp)
-    )
-    Image(
-        painter = painterResource(R.drawable.ic_rinf1),
-        contentDescription = "rinf1",
-        Modifier
-            .size(400.dp)
-            .padding(20.dp)
-    )
-    Text(
-        text = stringResource(R.string.motto_second),
-        textAlign = TextAlign.Center,
-        fontSize = 25.sp,
-        fontWeight = FontWeight.Bold,
-        fontFamily = FontFamily(Font(R.font.inknut_antiqua_semibold)),
-        color = colorResource(R.color.white),
-        modifier = Modifier.padding(top = 10.dp, bottom = 20.dp)
-    )
-}
+//@Composable
+//fun FrontPage() {
+//    Text(
+//        text = stringResource(R.string.motto_first),
+//        textAlign = TextAlign.Center,
+//        fontSize = 25.sp,
+//        fontWeight = FontWeight.Bold,
+//        fontFamily = FontFamily(Font(R.font.inknut_antiqua_semibold)),
+//        color = colorResource(R.color.white),
+//        modifier = Modifier.padding(bottom = 10.dp)
+//    )
+//    Image(
+//        painter = painterResource(R.drawable.ic_rinf1),
+//        contentDescription = "rinf1",
+//        Modifier
+//            .size(400.dp)
+//            .padding(20.dp)
+//    )
+//    Text(
+//        text = stringResource(R.string.motto_second),
+//        textAlign = TextAlign.Center,
+//        fontSize = 25.sp,
+//        fontWeight = FontWeight.Bold,
+//        fontFamily = FontFamily(Font(R.font.inknut_antiqua_semibold)),
+//        color = colorResource(R.color.white),
+//        modifier = Modifier.padding(top = 10.dp, bottom = 20.dp)
+//    )
+//}

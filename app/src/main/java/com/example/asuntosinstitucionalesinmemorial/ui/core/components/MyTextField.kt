@@ -26,6 +26,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.asuntosinstitucionalesinmemorial.R
+import com.example.asuntosinstitucionalesinmemorial.domain.model.Invitados
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Material
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
 
@@ -36,6 +37,7 @@ fun MyTextField(
     expandedMenu: Boolean,
     regalos: List<Regalos> = emptyList(),
     material: List<Material> = emptyList(),
+    invitados: List<Invitados> = emptyList(),
     onExpandedMenu: (Boolean) -> Unit,
     onSearchText: (String) -> Unit,
     onCategoriaMenu: (String) -> Unit
@@ -99,6 +101,8 @@ fun MyTextField(
                     regalos.map { it.categoria }.distinct()
                 } else if (material.isNotEmpty()) {
                     material.map { it.categoria }.distinct()
+                } else if (invitados.isNotEmpty()) {
+                    invitados.map { it.grupo }.distinct()
                 } else {
                     null
                 }

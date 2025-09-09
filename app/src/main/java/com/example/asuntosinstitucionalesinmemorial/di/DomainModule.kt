@@ -1,7 +1,13 @@
 package com.example.asuntosinstitucionalesinmemorial.di
 
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.GetEventsStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.GetEventByIdFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.GetEventGuestsFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.GetEventsFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.GetRelevoGuestsStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.SetGuestFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.SetRelevoGuestFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetAllPhotosStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetEventGuestsStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetMaterialStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetPhotosStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetRegalosStorageUseCase
@@ -52,9 +58,16 @@ val domainModule = module {
     single { DeleteMaterialFirestoreUseCase(get()) }
     single { UpdateMaterialFirestoreUseCase(get()) }
 
+    single { GetEventsFirestoreUseCase(get()) }
+    single { GetEventByIdFirestoreUseCase(get()) }
+    single { GetEventGuestsFirestoreUseCase(get()) }
+    single { SetGuestFirestoreUseCase(get()) }
+    single { SetRelevoGuestFirestoreUseCase(get()) }
+
     single { GetRegalosStorageUseCase(get()) }
     single { GetMaterialStorageUseCase(get()) }
-    single { GetEventsStorageUseCase(get()) }
     single { GetPhotosStorageUseCase(get()) }
     single { GetAllPhotosStorageUseCase(get()) }
+    single { GetEventGuestsStorageUseCase(get()) }
+    single { GetRelevoGuestsStorageUseCase(get()) }
 }

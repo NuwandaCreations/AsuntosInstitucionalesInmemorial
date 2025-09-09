@@ -63,10 +63,6 @@ fun StorageDetailScreen(
         ButtonAction.MATERIAL -> {
             detailViewModel.getMaterialByIdFirestore(objeto)
         }
-
-        ButtonAction.EVENTOS -> {
-            navigateBack()
-        }
     }
 
     Scaffold(
@@ -121,10 +117,7 @@ fun StorageDetailScreen(
                         })
                 }
             }
-
-            ButtonAction.EVENTOS -> {}
         }
-
     }
 }
 

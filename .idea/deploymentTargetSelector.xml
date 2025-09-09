@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-09-01T15:25:46.544061300Z">
+        <DropdownSelection timestamp="2025-09-09T18:50:55.440880Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\USUARIO\.android\avd\NuwandaMovil.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/pablorojoabollado/.android/avd/NuwandaMovil.avd" />
             </handle>
           </Target>
         </DropdownSelection>
