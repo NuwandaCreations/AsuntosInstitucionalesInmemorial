@@ -6,5 +6,6 @@ data class Evento(
     val descripcion: String? = null,
     val fecha: String? = null,
     val lugar: String? = null,
-    val imagen: String? = null
+    val imagen: String? = null,
+    val esRelevoGuardia: Boolean? = null
 )

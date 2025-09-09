@@ -13,7 +13,6 @@ import com.example.asuntosinstitucionalesinmemorial.ui.events.EventDetailScreen
 import com.example.asuntosinstitucionalesinmemorial.ui.events.EventGuestsScreen
 import com.example.asuntosinstitucionalesinmemorial.ui.events.EventsScreen
 import com.example.asuntosinstitucionalesinmemorial.ui.home.ButtonAction
-
 import com.example.asuntosinstitucionalesinmemorial.ui.home.HomeScreen
 import com.example.asuntosinstitucionalesinmemorial.ui.materialstorage.MaterialStorageScreen
 import com.example.asuntosinstitucionalesinmemorial.ui.regalosstorage.RegalosStorageScreen
@@ -71,14 +70,12 @@ fun NavigationWrapper() {
             composable<EventDetail> { navBackStackEntry ->
                 val event = navBackStackEntry.toRoute<EventDetail>()
                 EventDetailScreen(
-                    navController = navController,
                     event = event.event
                 )
             }
             composable<EventGuests> { navBackStackEntry ->
                 val event = navBackStackEntry.toRoute<EventGuests>()
                 EventGuestsScreen(
-                    navController = navController,
                     event = event.event
                 )
             }

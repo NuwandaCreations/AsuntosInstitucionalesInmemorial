@@ -1,6 +1,8 @@
 package com.example.asuntosinstitucionalesinmemorial.domain
 
 import com.example.asuntosinstitucionalesinmemorial.data.network.response.EventsResponse
+import com.example.asuntosinstitucionalesinmemorial.domain.model.Invitados
+import com.example.asuntosinstitucionalesinmemorial.domain.model.InvitadosRelevo
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Material
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
 import com.google.firebase.storage.ListResult
@@ -14,9 +16,12 @@ interface FirebaseRepository {
     suspend fun getEventGuestsStorage(event: String): String
     suspend fun setRegaloFirestore(regalo: Regalos)
     suspend fun setMaterialFirestore(material: Material)
+    suspend fun setGuestsFirestore(evento: String, invitado: Invitados)
+    suspend fun setRelevoGuestsFirestore(evento: String, invitado: InvitadosRelevo)
     fun getRegalosFirestore(): Flow<List<Regalos>>
     fun getMaterialFirestore(): Flow<List<Material>>
     fun getEventsFirestore(): Flow<List<EventsResponse>>
+    fun getGuestsFirestore(evento: String): Flow<List<Invitados>>
     fun getRegaloByIdFirestore(regalo: String): Flow<Regalos>
     fun getMaterialByIdFirestore(material: String): Flow<Material>
     fun getEventByIdFirestore(event: String): Flow<EventsResponse>

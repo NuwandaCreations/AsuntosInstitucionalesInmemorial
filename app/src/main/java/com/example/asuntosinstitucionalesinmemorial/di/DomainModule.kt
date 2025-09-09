@@ -1,7 +1,11 @@
 package com.example.asuntosinstitucionalesinmemorial.di
 
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.GetEventByIdFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.GetEventGuestsFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.GetEventsFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.GetRelevoGuestsStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.SetGuestFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.SetRelevoGuestFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetAllPhotosStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetEventGuestsStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetMaterialStorageUseCase
@@ -56,10 +60,14 @@ val domainModule = module {
 
     single { GetEventsFirestoreUseCase(get()) }
     single { GetEventByIdFirestoreUseCase(get()) }
+    single { GetEventGuestsFirestoreUseCase(get()) }
+    single { SetGuestFirestoreUseCase(get()) }
+    single { SetRelevoGuestFirestoreUseCase(get()) }
 
     single { GetRegalosStorageUseCase(get()) }
     single { GetMaterialStorageUseCase(get()) }
     single { GetPhotosStorageUseCase(get()) }
     single { GetAllPhotosStorageUseCase(get()) }
     single { GetEventGuestsStorageUseCase(get()) }
+    single { GetRelevoGuestsStorageUseCase(get()) }
 }

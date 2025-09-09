@@ -37,8 +37,6 @@ fun EventsScreen(
 
     eventsViewModel.getEventsFirestore()
 
-
-
     Scaffold(containerColor = colorResource(R.color.onPrimaryBackground)) { padding ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

@@ -11,7 +11,8 @@ data class EventsResponse(
     val descripcion: String? = null,
     val fecha: Timestamp? = null,
     val lugar: String? = null,
-    val imagen: String? = null
+    val imagen: String? = null,
+    val esRelevoGuardia: Boolean? = null
 )
 
 fun EventsResponse.toDomain(): Evento {
@@ -24,6 +25,7 @@ fun EventsResponse.toDomain(): Evento {
         descripcion = descripcion,
         fecha = formatedDate,
         lugar = lugar,
-        imagen = imagen
+        imagen = imagen,
+        esRelevoGuardia = esRelevoGuardia
     )
 }
