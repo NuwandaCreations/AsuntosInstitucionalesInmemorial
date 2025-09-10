@@ -47,3 +47,8 @@ data class EventDetail(val event: String) : AppScreen {
 data class EventGuests(val event: String) : AppScreen {
     override val route = "EventGuests"
 }
+
+@Serializable
+data class RelevoGuests(val event: String) : AppScreen {
+    override val route = "RelevoGuests"
+}

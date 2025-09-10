@@ -1,7 +1,7 @@
 package com.example.asuntosinstitucionalesinmemorial.data
 
 import android.util.Log
-import com.example.asuntosinstitucionalesinmemorial.data.network.response.EventsResponse
+import com.example.asuntosinstitucionalesinmemorial.data.network.response.events.EventsResponse
 import com.example.asuntosinstitucionalesinmemorial.domain.FirebaseRepository
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Invitados
 import com.example.asuntosinstitucionalesinmemorial.domain.model.InvitadosRelevo
@@ -32,10 +32,9 @@ class FirebaseRepositoryImpl(
             val bytes =
                 firebaseStorage.reference.child(REGALOS_JSON).getBytes(Long.MAX_VALUE).await()
             val jsonString = String(bytes)
-            Log.i("Firebase", "JSON regalos descargado: $jsonString")
             jsonString
         } catch (e: Exception) {
-            Log.e("Firebase", "Error descargando JSON", e)
+            Log.e("Firebase", "Error descargando JSON REGALOS", e)
             ""
         }
     }
@@ -45,10 +44,9 @@ class FirebaseRepositoryImpl(
             val bytes =
                 firebaseStorage.reference.child(MATERIAL_JSON).getBytes(Long.MAX_VALUE).await()
             val jsonString = String(bytes)
-            Log.i("Firebase", "JSON material descargado: $jsonString")
             jsonString
         } catch (e: Exception) {
-            Log.e("Firebase", "Error descargando JSON", e)
+            Log.e("Firebase", "Error descargando JSON MATERIAL", e)
             ""
         }
     }
@@ -65,12 +63,12 @@ class FirebaseRepositoryImpl(
     override suspend fun getEventGuestsStorage(event: String): String {
         return try {
             val bytes =
-                firebaseStorage.reference.child("$GUESTS_JSON$event.json").getBytes(Long.MAX_VALUE).await()
+                firebaseStorage.reference.child("$GUESTS_JSON$event.json").getBytes(Long.MAX_VALUE)
+                    .await()
             val jsonString = String(bytes)
-            Log.i("Firebase", "JSON invitados descargado: $jsonString")
             jsonString
         } catch (e: Exception) {
-            Log.e("Firebase", "Error descargando JSON", e)
+            Log.e("Firebase", "Error descargando JSON INVITADOS", e)
             ""
         }
     }
@@ -84,11 +82,13 @@ class FirebaseRepositoryImpl(
     }
 
     override suspend fun setGuestsFirestore(evento: String, invitado: Invitados) {
-        firestore.collection(EVENTOS).document(evento).collection(GUESTS).document(invitado.nombre).set(invitado)
+        firestore.collection(EVENTOS).document(evento).collection(GUESTS).document(invitado.nombre)
+            .set(invitado)
     }
 
     override suspend fun setRelevoGuestsFirestore(evento: String, invitado: InvitadosRelevo) {
-        firestore.collection(EVENTOS).document(evento).collection(GUESTS).document(invitado.nombre).set(invitado)
+        firestore.collection(EVENTOS).document(evento).collection(GUESTS).document(invitado.nombre)
+            .set(invitado)
     }
 
     override fun getRegalosFirestore(): Flow<List<Regalos>> {
@@ -120,6 +120,14 @@ class FirebaseRepositoryImpl(
             .snapshots()
             .map { snapshot ->
                 snapshot.toObjects(Invitados::class.java)
+            }
+    }
+
+    override fun getRelevoGuestsFirestore(evento: String): Flow<List<InvitadosRelevo>> {
+        return firestore.collection(EVENTOS).document(evento).collection(GUESTS)
+            .snapshots()
+            .map { snapshot ->
+                snapshot.toObjects(InvitadosRelevo::class.java)
             }
     }
 

@@ -20,7 +20,7 @@ fun MyButton(text: String, onClick: () -> Unit) {
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.White,
             contentColor = Color.Black,
-            )
+        )
     ) {
         Text(text)
     }

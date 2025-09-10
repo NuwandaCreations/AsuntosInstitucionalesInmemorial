@@ -8,10 +8,6 @@ import com.example.asuntosinstitucionalesinmemorial.ui.storagedetail.StorageDeta
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-val uiDomain = module {
-
-}
-
 val viewModelModule = module {
     viewModel {
         HomeViewModel(
@@ -47,6 +43,7 @@ val viewModelModule = module {
     }
     viewModel {
         EventsViewModel(
+            get(),
             get(),
             get(),
             get(),

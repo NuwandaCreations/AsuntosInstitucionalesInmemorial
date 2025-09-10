@@ -22,6 +22,14 @@
     <string name="material_screen_title">Inventario material protocolo</string>
     <string name="events_screen_title">Eventos en curso</string>
     <string name="guests_screen_title">Invitados</string>
+    <string name="first_visit">1ª Visita</string>
+    <string name="second_visit">2ª Visita</string>
+    <string name="no_visit">Sin visita</string>
+    <string name="yard_relevo">Relevo: Patio</string>
+    <string name="garden_relevo">Relevo: Jardines</string>
+    <string name="no_relevo">Sin relevo</string>
+    <string name="agape_access">Con entrada vino</string>
+    <string name="agape_deny">Sin entrada vino</string>
 
     <string name="regalos_button">Actualizar Regalos desde JSON Firebase</string>
     <string name="material_button">Actualizar Material desde JSON Firebase</string>

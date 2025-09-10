@@ -2,17 +2,18 @@ package com.example.asuntosinstitucionalesinmemorial.ui.events
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.asuntosinstitucionalesinmemorial.data.network.response.toDomain
+import com.example.asuntosinstitucionalesinmemorial.data.network.response.events.toDomain
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Evento
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Invitados
 import com.example.asuntosinstitucionalesinmemorial.domain.model.InvitadosRelevo
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.GetEventByIdFirestoreUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.GetEventGuestsFirestoreUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.GetEventsFirestoreUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.GetRelevoGuestsStorageUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.SetGuestFirestoreUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.SetRelevoGuestFirestoreUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.firestorageusecases.GetEventGuestsStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetEventByIdFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetEventGuestsFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetEventsFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetRelevoGuestsStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetGuestFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetRelevoGuestFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetEventGuestsStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetRelevoGuestsFirestoreUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,6 +26,7 @@ class EventsViewModel(
     val getEventGuestsStorageUseCase: GetEventGuestsStorageUseCase,
     val getRelevoGuestsStorageUseCase: GetRelevoGuestsStorageUseCase,
     val getEventGuestsFirestoreUseCase: GetEventGuestsFirestoreUseCase,
+    val getRelevoGuestsFirestoreUseCase: GetRelevoGuestsFirestoreUseCase,
     val setGuestFirestoreUseCase: SetGuestFirestoreUseCase,
     val setRelevoGuestFirestoreUseCase: SetRelevoGuestFirestoreUseCase
 ) : ViewModel() {
@@ -81,10 +83,20 @@ class EventsViewModel(
         }
     }
 
-    fun setInvitadoFirestore(event: String, invitado: Invitados) {
+    fun setGuestFirestore(event: String, invitado: Invitados) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 setGuestFirestoreUseCase(event, invitado)
+            } catch (_: Exception) {
+
+            }
+        }
+    }
+
+    fun setRelevoGuestFirestore(event: String, invitado: InvitadosRelevo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                setRelevoGuestFirestoreUseCase(event, invitado)
             } catch (_: Exception) {
 
             }
@@ -105,6 +117,20 @@ class EventsViewModel(
             } catch (_: Exception) {
 //                getRegalosFromDB()
             }
+        }
+    }
+
+    fun getRelevoGuests(event: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                getRelevoGuestsFirestoreUseCase(event).collect { invitados ->
+                    _uiState.update {
+                        it.copy(
+                            invitadosRelevo = invitados
+                        )
+                    }
+                }
+            } catch (_: Exception) { }
         }
     }
 
