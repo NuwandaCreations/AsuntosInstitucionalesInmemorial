@@ -1,6 +1,6 @@
 package com.example.asuntosinstitucionalesinmemorial.domain
 
-import com.example.asuntosinstitucionalesinmemorial.data.network.response.EventsResponse
+import com.example.asuntosinstitucionalesinmemorial.data.network.response.events.EventsResponse
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Invitados
 import com.example.asuntosinstitucionalesinmemorial.domain.model.InvitadosRelevo
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Material
@@ -22,6 +22,7 @@ interface FirebaseRepository {
     fun getMaterialFirestore(): Flow<List<Material>>
     fun getEventsFirestore(): Flow<List<EventsResponse>>
     fun getGuestsFirestore(evento: String): Flow<List<Invitados>>
+    fun getRelevoGuestsFirestore(evento: String): Flow<List<InvitadosRelevo>>
     fun getRegaloByIdFirestore(regalo: String): Flow<Regalos>
     fun getMaterialByIdFirestore(material: String): Flow<Material>
     fun getEventByIdFirestore(event: String): Flow<EventsResponse>

@@ -31,7 +31,8 @@ import java.util.Locale
 fun EventsScreen(
     eventsViewModel: EventsViewModel = koinViewModel(),
     goToEventDetail: (String) -> Unit,
-    goToEventGuests: (String) -> Unit
+    goToEventGuests: (String) -> Unit,
+    goToRelevoGuests: (String) -> Unit
 ) {
     val uiState by eventsViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -56,8 +57,15 @@ fun EventsScreen(
                         name = evento.nombre.toString(),
                         date = evento.fecha.toString(),
                         photoUrl = evento.imagen.toString(),
-                        onClick = { goToEventGuests(evento.id.toString()) },
-                        onLongClick = { goToEventDetail(evento.id  .toString()) }
+                        onClick = {
+                            if (evento.esRelevoGuardia == true) {
+                                goToRelevoGuests(evento.id.toString())
+                            } else {
+                                goToEventGuests(evento.id.toString())
+
+                            }
+                        },
+                        onLongClick = { goToEventDetail(evento.id.toString()) }
                     )
                 }
             }

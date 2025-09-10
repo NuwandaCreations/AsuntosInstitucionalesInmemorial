@@ -42,7 +42,6 @@ fun EventsCard(
                 onClick = { onClick(name) },
                 onLongClick = { onLongClick(name) }
             ),
-//            .clickable { onItemClick(name) },
         colors = CardDefaults.elevatedCardColors(
             containerColor = colorResource(R.color.onPrimary),
             contentColor = colorResource(R.color.white)

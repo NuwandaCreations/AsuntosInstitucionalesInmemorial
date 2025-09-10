@@ -44,10 +44,22 @@ fun NavigationBar(navController: NavHostController) {
                 ),
                 onClick = {
                     when (item.screen) {
-                        Home -> {  navController.navigate(item.screen) }
-                        Events -> {  navController.navigate(item.screen) }
-                        RegalosStorage -> {  navController.navigate(item.screen) }
-                        MaterialStorage -> {  navController.navigate(item.screen) }
+                        Home -> {
+                            navController.navigate(item.screen)
+                        }
+
+                        Events -> {
+                            navController.navigate(item.screen)
+                        }
+
+                        RegalosStorage -> {
+                            navController.navigate(item.screen)
+                        }
+
+                        MaterialStorage -> {
+                            navController.navigate(item.screen)
+                        }
+
                         else -> {}
                     }
                 }
