@@ -42,7 +42,6 @@ fun RegalosStorageScreen(
     var expandedMenu by rememberSaveable { mutableStateOf(false) }
     var categoriaMenu by rememberSaveable { mutableStateOf("Todos") }
 
-    regalosStorageViewModel.getAllPhotos()
     regalosStorageViewModel.getRegalosFirestore()
 
     Scaffold(
@@ -85,11 +84,13 @@ fun RegalosStorageScreen(
                         if (searchText.isEmpty() || regalo.objeto.toString()
                                 .contains(searchText, ignoreCase = true)
                         ) {
-                            val url = uiState.photoUrl[regalo.objeto.toString()] ?: ""
+                            if (regalo.foto.isEmpty()) {
+                                regalosStorageViewModel.getPhoto(regalo)
+                            }
                             Card(
                                 material = "${regalo.objeto}",
                                 category = "${regalo.categoria}",
-                                photoUrl = url
+                                photoUrl = regalo.foto
                             ) {
                                 goToDetail(regalo.objeto.toString())
                             }

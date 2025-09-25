@@ -14,6 +14,7 @@ import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusec
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.room.AddMaterialDBUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.room.DeleteMaterialDBUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.room.GetMaterialDBUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firebasestorage.GetPhotosStorageUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,8 @@ class MaterialStorageViewModel(
     val setMaterialFirestoreUseCase: SetMaterialFirestoreUseCase,
     val getMaterialFirestoreUseCase: GetMaterialFirestoreUseCase,
     val deleteMaterialFirestoreUseCase: DeleteMaterialFirestoreUseCase,
-    val getAllPhotosStorageUseCase: GetAllPhotosStorageUseCase
+    val getAllPhotosStorageUseCase: GetAllPhotosStorageUseCase,
+    val getPhotosStorageUseCase: GetPhotosStorageUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MaterialStorageUiState())
     val uiState: StateFlow<MaterialStorageUiState> = _uiState
@@ -113,6 +115,18 @@ class MaterialStorageViewModel(
             } catch (_: Exception) {
 
             }
+        }
+    }
+
+    fun getPhoto(material: Material) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val url = getPhotosStorageUseCase(material.objeto!!)
+                if (url.isNotEmpty()) {
+                    val newMaterial = material.copy(foto = url)
+                    setMaterialFirestore(newMaterial)
+                }
+            } catch (_: Exception) { }
         }
     }
 

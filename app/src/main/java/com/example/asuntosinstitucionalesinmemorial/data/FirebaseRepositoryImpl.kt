@@ -22,6 +22,7 @@ import com.google.firebase.storage.ListResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+import java.text.Normalizer
 
 class FirebaseRepositoryImpl(
     val firebaseStorage: FirebaseStorage = FirebaseStorage.getInstance(),
@@ -81,6 +82,10 @@ class FirebaseRepositoryImpl(
         firestore.collection(MATERIAL).document("${material.objeto}").set(material)
     }
 
+    override suspend fun setEventFirestore(event: EventsResponse) {
+        firestore.collection(EVENTOS).document(event.id ?: "").set(event)
+    }
+
     override suspend fun setGuestsFirestore(evento: String, invitado: Invitados) {
         firestore.collection(EVENTOS).document(evento).collection(GUESTS).document(invitado.nombre)
             .set(invitado)
@@ -131,11 +136,46 @@ class FirebaseRepositoryImpl(
             }
     }
 
+    override suspend fun getGuestsPhotosStorage(): List<Pair<String, String>> {
+        val photos = firebaseStorage.reference.child("1-eventos/imagenes/invitados/").listAll().await()
+        var photosList: List<Pair<String, String>> = emptyList()
+        photos.items.forEach {
+            val upperName = it.name.substringBeforeLast(".").uppercase()
+            val normalized = Normalizer.normalize(upperName, Normalizer.Form.NFD)
+            val photoName = normalized.replace("\\p{Mn}+".toRegex(), "")
+            photosList = photosList + Pair(photoName, it.downloadUrl.await().toString())
+        }
+        Tasks.whenAll()
+        return photosList
+    }
+
     override fun getEventByIdFirestore(event: String): Flow<EventsResponse> {
         return firestore.collection(EVENTOS).document(event)
             .snapshots()
             .map { snapshot ->
                 snapshot.toObject(EventsResponse::class.java) ?: EventsResponse()
+            }
+    }
+
+    override fun getGuestByIdFirestore(
+        evento: String,
+        invitado: String
+    ): Flow<Invitados> {
+        return firestore.collection(EVENTOS).document(evento).collection(GUESTS).document(invitado)
+            .snapshots()
+            .map { snapshot ->
+                snapshot.toObject(Invitados::class.java) ?: Invitados()
+            }
+    }
+
+    override fun getRelevoGuestByIdFirestore(
+        evento: String,
+        invitado: String
+    ): Flow<InvitadosRelevo> {
+        return firestore.collection(EVENTOS).document(evento).collection(GUESTS).document(invitado)
+            .snapshots()
+            .map { snapshot ->
+                snapshot.toObject(InvitadosRelevo::class.java) ?: InvitadosRelevo()
             }
     }
 

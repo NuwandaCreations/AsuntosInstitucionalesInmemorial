@@ -2,12 +2,14 @@ package com.example.asuntosinstitucionalesinmemorial.ui.guests
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -27,9 +29,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.asuntosinstitucionalesinmemorial.R
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Invitados
 import com.example.asuntosinstitucionalesinmemorial.ui.core.components.MyTextField
@@ -40,6 +44,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun EventGuestsScreen(
     eventsViewModel: EventsViewModel = koinViewModel(),
+    goToGuestDetail: (String) -> Unit,
     event: String
 ) {
     val uiState by eventsViewModel.uiState.collectAsState()
@@ -49,6 +54,7 @@ fun EventGuestsScreen(
     var selectedGuest = Invitados()
 //TODO LOS INVITADOS DEL RELEVO AQUÍ NO FUNCIONA, HAY QUE HACER OTRA SCREEN O VER COMO ENCAJARLO
     eventsViewModel.getEventGuests(event)
+    eventsViewModel.getGuestsPhotos()
 
     Scaffold(
         containerColor = colorResource(R.color.onPrimaryBackground),
@@ -96,6 +102,7 @@ fun EventGuestsScreen(
                 state = rememberLazyListState(),
             ) {
                 items(uiState.invitados) { invitado ->
+                    eventsViewModel.searchPhoto(event, invitado)
                     if (categoriaMenu == stringResource(R.string.all) || categoriaMenu == invitado.grupo) {
                         if (searchText.isEmpty() || invitado.nombre
                                 .contains(searchText, ignoreCase = true)
@@ -104,10 +111,16 @@ fun EventGuestsScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(10.dp, 5.dp)
-                                    .clickable {
-                                        selectedGuest = invitado
-                                        eventsViewModel.showDialog(true)
-                                    }
+                                    .combinedClickable(
+                                        onClick = {
+                                            selectedGuest = invitado
+                                            eventsViewModel.showDialog(true)
+                                        },
+                                        onLongClick = {
+                                            selectedGuest = invitado
+                                            goToGuestDetail(invitado.nombre)
+                                        }
+                                    )
                                     .border(
                                         width = 0.6.dp,
                                         color = colorResource(R.color.white),
@@ -132,8 +145,9 @@ fun EventGuestsScreen(
                                         Text(
                                             text = invitado.nombre,
                                             modifier = Modifier.padding(
-                                                horizontal = 15.dp,
-                                                vertical = 5.dp
+                                                start = 15.dp,
+                                                end = 15.dp,
+                                                top = 5.dp,
                                             )
                                         )
                                         val textGrupo =
@@ -141,43 +155,26 @@ fun EventGuestsScreen(
                                         Text(
                                             text = textGrupo,
                                             modifier = Modifier.padding(
-                                                horizontal = 15.dp,
-                                                vertical = 5.dp
+                                                start = 15.dp,
+                                                end = 15.dp,
+                                                bottom = 5.dp,
                                             ),
                                             color = colorResource(R.color.white_transparent)
                                         )
                                     }
-//                                    if (invitado.foto.isNotEmpty()) {
-//                                        AsyncImage(
-//                                            model = invitado.foto,
-//                                            contentDescription = "photo",
-//                                            contentScale = ContentScale.Fit,
-//                                            modifier = Modifier
-//                                                .size(90.dp)
-//                                                .padding(7.dp)
-//                                                .weight(1f)
-//                                        )
-//                                    } else {
-//                                        Image(
-//                                            painter = painterResource(R.drawable.ic_present),
-//                                            contentDescription = "Material",
-//                                            modifier = Modifier
-//                                                .size(90.dp)
-//                                                .padding(7.dp)
-//                                                .weight(1f)
-//                                        )
-//                                    }
+                                    if (invitado.foto.isNotEmpty()) {
+                                        AsyncImage(
+                                            model = invitado.foto,
+                                            contentDescription = "photo",
+                                            contentScale = ContentScale.Fit,
+                                            modifier = Modifier
+                                                .size(90.dp)
+                                                .padding(7.dp)
+                                                .weight(1f)
+                                        )
+                                    }
                                 }
                             }
-//                            Card(
-//                                material = invitado.nombre,
-//                                category = invitado.grupo,
-//                                photoUrl = invitado.foto
-//                            ) {
-//                                selectedGuest = invitado
-//                                eventsViewModel.showDialog(true)
-////                                goToDetail(invitado.objeto.toString())
-//                            }
                         }
                     }
                 }

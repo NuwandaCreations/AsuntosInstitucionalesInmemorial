@@ -8,7 +8,8 @@ data class Material(
     var cantidad: Int? = null,
     val localizacion: String? = null,
     val objeto: String? = null,
-    val observaciones: String? = null
+    val observaciones: String? = null,
+    val foto: String = ""
 )
 
 fun Material.toData(): MaterialEntity {

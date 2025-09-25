@@ -1,17 +1,17 @@
 package com.example.asuntosinstitucionalesinmemorial.di
 
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetEventGuestsStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetGuestsPhotosStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetRelevoGuestsStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetEventByIdFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetEventGuestsFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetEventsFirestoreUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetRelevoGuestsStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetGuestByIdFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetGuestRelevoByIdFirestoreUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetRelevoGuestsFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetGuestFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetRelevoGuestFirestoreUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firebasestorage.GetAllPhotosStorageUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetEventGuestsStorageUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetRelevoGuestsFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.firebasestorage.GetMaterialStorageUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firebasestorage.GetPhotosStorageUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firebasestorage.GetRegalosStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.firestore.DeleteMaterialFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.firestore.GetMaterialByIdFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.firestore.GetMaterialFirestoreUseCase
@@ -22,6 +22,9 @@ import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusec
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.room.DeleteMaterialDBUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.room.GetMaterialDBUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.materialusecases.room.UpdateMaterialDBUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firebasestorage.GetAllPhotosStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firebasestorage.GetPhotosStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firebasestorage.GetRegalosStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firestore.DeleteRegaloFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firestore.GetRegaloByIdFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firestore.GetRegalosFirestoreUseCase
@@ -66,11 +69,14 @@ val domainModule = module {
     single { GetAllPhotosStorageUseCase(get()) }
     single { GetEventGuestsStorageUseCase(get()) }
     single { GetRelevoGuestsStorageUseCase(get()) }
+    single { GetGuestsPhotosStorageUseCase(get()) }
 
     single { GetEventsFirestoreUseCase(get()) }
     single { GetEventByIdFirestoreUseCase(get()) }
     single { GetEventGuestsFirestoreUseCase(get()) }
     single { GetRelevoGuestsFirestoreUseCase(get()) }
+    single { GetGuestByIdFirestoreUseCase(get()) }
+    single { GetGuestRelevoByIdFirestoreUseCase(get()) }
     single { SetGuestFirestoreUseCase(get()) }
     single { SetRelevoGuestFirestoreUseCase(get()) }
 }

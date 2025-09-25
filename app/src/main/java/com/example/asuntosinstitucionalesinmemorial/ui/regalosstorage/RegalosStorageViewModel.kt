@@ -6,6 +6,7 @@ import com.example.asuntosinstitucionalesinmemorial.data.database.storagedb.mode
 import com.example.asuntosinstitucionalesinmemorial.domain.model.ProtocolStorage
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Regalos
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firebasestorage.GetAllPhotosStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firebasestorage.GetPhotosStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firestore.DeleteRegaloFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firestore.GetRegalosFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firestore.SetRegaloFirestoreUseCase
@@ -25,7 +26,8 @@ class RegalosStorageViewModel(
     val setRegaloFirestoreUseCase: SetRegaloFirestoreUseCase,
     val getRegalosFirestoreUseCase: GetRegalosFirestoreUseCase,
     val deleteRegaloFirestoreUseCase: DeleteRegaloFirestoreUseCase,
-    val getAllPhotosStorageUseCase: GetAllPhotosStorageUseCase
+    val getAllPhotosStorageUseCase: GetAllPhotosStorageUseCase,
+    val getPhotosStorageUseCase: GetPhotosStorageUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RegalosStorageUiState())
     val uiState: StateFlow<RegalosStorageUiState> = _uiState
@@ -112,6 +114,18 @@ class RegalosStorageViewModel(
             } catch (_: Exception) {
 
             }
+        }
+    }
+
+    fun getPhoto(regalo: Regalos) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val url = getPhotosStorageUseCase(regalo.objeto!!)
+                if (url.isNotEmpty()) {
+                    val newRegalo = regalo.copy(foto = url)
+                    setRegaloFirestore(newRegalo)
+                }
+            } catch (_: Exception) { }
         }
     }
 }
