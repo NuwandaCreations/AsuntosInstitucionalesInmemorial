@@ -9,7 +9,8 @@ data class Regalos(
     val detalleLocalizacion: String? = null,
     val localizacion: String? = null,
     val objeto: String? = null,
-    val requisitoRegalo: String? = null
+    val requisitoRegalo: String? = null,
+    val foto: String = ""
 )
 
 fun Regalos.toData(): RegalosEntity {

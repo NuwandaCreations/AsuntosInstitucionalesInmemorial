@@ -13,12 +13,14 @@ import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecas
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetGuestFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetRelevoGuestFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetEventGuestsStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetGuestsPhotosStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetRelevoGuestsFirestoreUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.Normalizer
 
 class EventsViewModel(
     val getEventsFirestoreUseCase: GetEventsFirestoreUseCase,
@@ -28,7 +30,8 @@ class EventsViewModel(
     val getEventGuestsFirestoreUseCase: GetEventGuestsFirestoreUseCase,
     val getRelevoGuestsFirestoreUseCase: GetRelevoGuestsFirestoreUseCase,
     val setGuestFirestoreUseCase: SetGuestFirestoreUseCase,
-    val setRelevoGuestFirestoreUseCase: SetRelevoGuestFirestoreUseCase
+    val setRelevoGuestFirestoreUseCase: SetRelevoGuestFirestoreUseCase,
+    val getGuestsPhotosStorageUseCase: GetGuestsPhotosStorageUseCase
 ) : ViewModel() {
     val _uiState = MutableStateFlow(EventsUiState())
     val uiState: StateFlow<EventsUiState> = _uiState
@@ -130,7 +133,28 @@ class EventsViewModel(
                         )
                     }
                 }
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+    fun getGuestsPhotos() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val photoNames = getGuestsPhotosStorageUseCase()
+                _uiState.update { it.copy(guestsPhotos = photoNames) }
             } catch (_: Exception) { }
+        }
+    }
+
+    fun searchPhoto(event: String, invitado: Invitados) {
+        val upperName = invitado.nombre.uppercase()
+        val normalized = Normalizer.normalize(upperName, Normalizer.Form.NFD)
+        val photoName = normalized.replace("\\p{Mn}+".toRegex(), "")
+        _uiState.value.guestsPhotos.forEach {
+            if (photoName == it.first) {
+                setGuestFirestore(event, invitado.copy(foto = it.second))
+            }
         }
     }
 
@@ -144,5 +168,6 @@ data class EventsUiState(
     val event: Evento? = null,
     val invitados: List<Invitados> = emptyList(),
     val invitadosRelevo: List<InvitadosRelevo> = emptyList(),
+    val guestsPhotos: List<Pair<String, String>> = emptyList(),
     val isDialogShown: Boolean = false
 )

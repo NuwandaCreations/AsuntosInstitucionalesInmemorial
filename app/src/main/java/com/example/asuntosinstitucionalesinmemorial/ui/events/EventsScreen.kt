@@ -7,7 +7,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,13 +37,24 @@ fun EventsScreen(
     eventsViewModel: EventsViewModel = koinViewModel(),
     goToEventDetail: (String) -> Unit,
     goToEventGuests: (String) -> Unit,
-    goToRelevoGuests: (String) -> Unit
+    goToRelevoGuests: (String) -> Unit,
+    goToCreateEvent: () -> Unit
 ) {
     val uiState by eventsViewModel.uiState.collectAsStateWithLifecycle()
 
     eventsViewModel.getEventsFirestore()
 
-    Scaffold(containerColor = colorResource(R.color.onPrimaryBackground)) { padding ->
+    Scaffold(
+        containerColor = colorResource(R.color.onPrimaryBackground),
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                goToCreateEvent()
+            }) {
+                Icon(Icons.Default.Add, null)
+            }
+        },
+        floatingActionButtonPosition = FabPosition.EndOverlay
+    ) { padding ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()

@@ -14,8 +14,10 @@ interface FirebaseRepository {
     suspend fun getPhotosStorage(objeto: String): String
     suspend fun getAllPhotosStorage(): ListResult
     suspend fun getEventGuestsStorage(event: String): String
+    suspend fun getGuestsPhotosStorage() : List<Pair<String, String>>
     suspend fun setRegaloFirestore(regalo: Regalos)
     suspend fun setMaterialFirestore(material: Material)
+    suspend fun setEventFirestore(event: EventsResponse)
     suspend fun setGuestsFirestore(evento: String, invitado: Invitados)
     suspend fun setRelevoGuestsFirestore(evento: String, invitado: InvitadosRelevo)
     fun getRegalosFirestore(): Flow<List<Regalos>>
@@ -26,6 +28,8 @@ interface FirebaseRepository {
     fun getRegaloByIdFirestore(regalo: String): Flow<Regalos>
     fun getMaterialByIdFirestore(material: String): Flow<Material>
     fun getEventByIdFirestore(event: String): Flow<EventsResponse>
+    fun getGuestByIdFirestore(evento: String, invitado: String): Flow<Invitados>
+    fun getRelevoGuestByIdFirestore(evento: String, invitado: String): Flow<InvitadosRelevo>
     suspend fun deleteRegalosFirestore(regalos: Regalos)
     suspend fun deleteMaterialFirestore(material: Material)
     suspend fun updateRegalosFirestore(regalosList: List<Regalos>)

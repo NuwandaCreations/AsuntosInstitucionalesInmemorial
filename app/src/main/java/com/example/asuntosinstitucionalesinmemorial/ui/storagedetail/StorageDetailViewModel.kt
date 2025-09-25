@@ -74,18 +74,6 @@ class StorageDetailViewModel(
         }
     }
 
-    fun getPhoto(objeto: String) {
-        _uiState.update { it.copy(progressVisibility = true) }
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val url = getPhotosStorageUseCase(objeto)
-                _uiState.update { it.copy(photoUrl = url, progressVisibility = false) }
-            } catch (_: Exception) {
-                _uiState.update { it.copy(progressVisibility = false) }
-            }
-        }
-    }
-
     fun regaloPlusNumber(regalo: Regalos) {
         regalo.cantidad = regalo.cantidad?.plus(1) ?: 1
         viewModelScope.launch(Dispatchers.IO) {

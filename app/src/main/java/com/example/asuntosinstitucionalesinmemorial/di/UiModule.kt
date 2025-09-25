@@ -1,6 +1,7 @@
 package com.example.asuntosinstitucionalesinmemorial.di
 
 import com.example.asuntosinstitucionalesinmemorial.ui.events.EventsViewModel
+import com.example.asuntosinstitucionalesinmemorial.ui.guests.GuestDetailViewModel
 import com.example.asuntosinstitucionalesinmemorial.ui.home.HomeViewModel
 import com.example.asuntosinstitucionalesinmemorial.ui.materialstorage.MaterialStorageViewModel
 import com.example.asuntosinstitucionalesinmemorial.ui.regalosstorage.RegalosStorageViewModel
@@ -27,11 +28,13 @@ val viewModelModule = module {
             get(),
             get(),
             get(),
+            get(),
             get()
         )
     }
     viewModel {
         MaterialStorageViewModel(
+            get(),
             get(),
             get(),
             get(),
@@ -50,6 +53,7 @@ val viewModelModule = module {
             get(),
             get(),
             get(),
+            get(),
             get()
         )
     }
@@ -57,6 +61,13 @@ val viewModelModule = module {
         StorageDetailViewModel(
             get(),
             get(),
+            get(),
+            get(),
+            get()
+        )
+    }
+    viewModel {
+        GuestDetailViewModel(
             get(),
             get(),
             get()

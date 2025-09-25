@@ -2,12 +2,14 @@ package com.example.asuntosinstitucionalesinmemorial.ui.guests
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -27,9 +29,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.asuntosinstitucionalesinmemorial.R
 import com.example.asuntosinstitucionalesinmemorial.domain.model.InvitadosRelevo
 import com.example.asuntosinstitucionalesinmemorial.ui.core.components.MyTextField
@@ -40,6 +44,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun RelevoGuestsScreen(
     eventsViewModel: EventsViewModel = koinViewModel(),
+    goToGuestDetail: (String) -> Unit,
     event: String
 ) {
     val uiState by eventsViewModel.uiState.collectAsState()
@@ -104,10 +109,16 @@ fun RelevoGuestsScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(10.dp, 5.dp)
-                                    .clickable {
-                                        selectedGuest = invitado
-                                        eventsViewModel.showDialog(true)
-                                    }
+                                    .combinedClickable(
+                                        onClick = {
+                                            selectedGuest = invitado
+                                            eventsViewModel.showDialog(true)
+                                        },
+                                        onLongClick = {
+                                            selectedGuest = invitado
+                                            goToGuestDetail(invitado.nombre)
+                                        }
+                                    )
                                     .border(
                                         width = 0.6.dp,
                                         color = colorResource(R.color.white),
@@ -135,14 +146,12 @@ fun RelevoGuestsScreen(
                                             text = textNombre,
                                             modifier = Modifier
                                                 .padding(
-                                                    horizontal = 15.dp,
-                                                    vertical = 5.dp
+                                                    horizontal = 15.dp
                                                 )
                                         )
                                         Row(
                                             modifier = Modifier
                                                 .padding(
-                                                    vertical = 5.dp,
                                                     horizontal = 15.dp
                                                 )
                                         ) {
@@ -154,7 +163,7 @@ fun RelevoGuestsScreen(
                                                 else stringResource(R.string.no_visit)
                                             Text(
                                                 text = textVisita,
-                                                modifier = Modifier.padding(horizontal = 7.dp),
+                                                modifier = Modifier.padding(horizontal = 2.dp),
                                                 color = colorResource(R.color.white_transparent)
                                             )
                                             val textActo =
@@ -162,51 +171,33 @@ fun RelevoGuestsScreen(
                                                 else stringResource(R.string.garden_relevo)
                                             Text(
                                                 text = textActo,
-                                                modifier = Modifier.padding(horizontal = 7.dp),
-                                                color = colorResource(R.color.white_transparent)
-                                            )
-                                            val textVino =
-                                                if (invitado.vino.isNotEmpty()) stringResource(R.string.agape_access)
-                                                else stringResource(R.string.agape_deny)
-                                            Text(
-                                                text = textVino,
-                                                modifier = Modifier.padding(horizontal = 7.dp),
+                                                modifier = Modifier.padding(horizontal = 2.dp),
                                                 color = colorResource(R.color.white_transparent)
                                             )
                                         }
 
+                                        val textVino =
+                                            if (invitado.vino.isNotEmpty()) stringResource(R.string.agape_access)
+                                            else stringResource(R.string.agape_deny)
+                                        Text(
+                                            text = textVino,
+                                            modifier = Modifier.padding(start = 17.dp, end = 7.dp, bottom = 5.dp),
+                                            color = colorResource(R.color.white_transparent)
+                                        )
                                     }
-//                                    if (invitado.foto.isNotEmpty()) {
-//                                        AsyncImage(
-//                                            model = invitado.foto,
-//                                            contentDescription = "photo",
-//                                            contentScale = ContentScale.Fit,
-//                                            modifier = Modifier
-//                                                .size(90.dp)
-//                                                .padding(7.dp)
-//                                                .weight(1f)
-//                                        )
-//                                    } else {
-//                                        Image(
-//                                            painter = painterResource(R.drawable.ic_present),
-//                                            contentDescription = "Material",
-//                                            modifier = Modifier
-//                                                .size(90.dp)
-//                                                .padding(7.dp)
-//                                                .weight(1f)
-//                                        )
-//                                    }
+                                    if (invitado.foto.isNotEmpty()) {
+                                        AsyncImage(
+                                            model = invitado.foto,
+                                            contentDescription = "photo",
+                                            contentScale = ContentScale.Fit,
+                                            modifier = Modifier
+                                                .size(90.dp)
+                                                .padding(7.dp)
+                                                .weight(1f)
+                                        )
+                                    }
                                 }
                             }
-//                            Card(
-//                                material = invitado.nombre,
-//                                category = invitado.grupo,
-//                                photoUrl = invitado.foto
-//                            ) {
-//                                selectedGuest = invitado
-//                                eventsViewModel.showDialog(true)
-////                                goToDetail(invitado.objeto.toString())
-//                            }
                         }
                     }
                 }

@@ -9,9 +9,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.asuntosinstitucionalesinmemorial.ui.editstorage.EditStorageScreen
+import com.example.asuntosinstitucionalesinmemorial.ui.events.CreateEventScreen
 import com.example.asuntosinstitucionalesinmemorial.ui.events.EventDetailScreen
 import com.example.asuntosinstitucionalesinmemorial.ui.guests.EventGuestsScreen
 import com.example.asuntosinstitucionalesinmemorial.ui.events.EventsScreen
+import com.example.asuntosinstitucionalesinmemorial.ui.guests.GuestDetailScreen
 import com.example.asuntosinstitucionalesinmemorial.ui.guests.RelevoGuestsScreen
 import com.example.asuntosinstitucionalesinmemorial.ui.home.ButtonAction
 import com.example.asuntosinstitucionalesinmemorial.ui.home.HomeScreen
@@ -66,7 +68,8 @@ fun NavigationWrapper() {
                 EventsScreen(
                     goToEventDetail = { navController.navigate(EventDetail(event = it)) },
                     goToEventGuests = { navController.navigate(EventGuests(event = it)) },
-                    goToRelevoGuests = { navController.navigate(RelevoGuests(event = it)) }
+                    goToRelevoGuests = { navController.navigate(RelevoGuests(event = it)) },
+                    goToCreateEvent = { navController.navigate(CreateEvent) }
                 )
             }
             composable<EventDetail> { navBackStackEntry ->
@@ -75,16 +78,31 @@ fun NavigationWrapper() {
                     event = event.event
                 )
             }
+            composable<CreateEvent> {
+                CreateEventScreen(
+                    navigateBack = { navController.popBackStack() }
+                )
+            }
             composable<EventGuests> { navBackStackEntry ->
                 val event = navBackStackEntry.toRoute<EventGuests>()
                 EventGuestsScreen(
-                    event = event.event
+                    event = event.event,
+                    goToGuestDetail = { navController.navigate(GuestDetail(event = event.event, guest = it, esRelevo = false)) }
                 )
             }
             composable<RelevoGuests> { navBackStackEntry ->
                 val event = navBackStackEntry.toRoute<RelevoGuests>()
                 RelevoGuestsScreen(
-                    event = event.event
+                    event = event.event,
+                    goToGuestDetail = { navController.navigate(GuestDetail(event = event.event, guest = it, esRelevo = true)) }
+                )
+            }
+            composable<GuestDetail> { navBackStackEntry ->
+                val detail = navBackStackEntry.toRoute<GuestDetail>()
+                GuestDetailScreen(
+                    event = detail.event,
+                    guest = detail.guest,
+                    esRelevo = detail.esRelevo
                 )
             }
         }

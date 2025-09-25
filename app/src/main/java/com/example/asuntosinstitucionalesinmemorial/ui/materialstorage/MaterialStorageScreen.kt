@@ -84,11 +84,13 @@ fun MaterialStorageScreen(
                         if (searchText.isEmpty() || material.objeto.toString()
                                 .contains(searchText, ignoreCase = true)
                         ) {
-                            val url = uiState.photoUrl[material.objeto.toString()] ?: ""
+                            if (material.foto.isEmpty()) {
+                                materialStorageViewModel.getPhoto(material)
+                            }
                             Card(
                                 material = "${material.objeto}",
                                 category = "${material.categoria}",
-                                photoUrl = url
+                                photoUrl = material.foto
                             ) {
                                 goToDetail(material.objeto.toString())
                             }

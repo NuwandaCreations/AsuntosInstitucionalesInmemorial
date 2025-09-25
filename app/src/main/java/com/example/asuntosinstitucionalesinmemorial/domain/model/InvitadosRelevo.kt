@@ -13,5 +13,6 @@ data class InvitadosRelevo(
     val jardines: String = "",
     val vino: String = "",
     val notaProtocolo: String = "",
-    var accedido: Boolean = false
+    var accedido: Boolean = false,
+    val foto: String = ""
 )

@@ -54,7 +54,6 @@ fun StorageDetailScreen(
     val snackBarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
 
-    detailViewModel.getPhoto(objeto)
     when (type) {
         ButtonAction.REGALOS -> {
             detailViewModel.getRegaloByIdFirestore(objeto)
@@ -88,7 +87,7 @@ fun StorageDetailScreen(
                         it.categoria.toString(),
                         it.localizacion.toString(),
                         it.requisitoRegalo.toString(),
-                        uiState.photoUrl ?: "",
+                        it.foto,
                         scrollState,
                         plusNumber = {
                             detailViewModel.regaloPlusNumber(it)
@@ -107,7 +106,7 @@ fun StorageDetailScreen(
                         it.categoria.toString(),
                         it.localizacion.toString(),
                         it.observaciones.toString(),
-                        uiState.photoUrl ?: "",
+                        it.foto,
                         scrollState,
                         plusNumber = {
                             detailViewModel.materialPlusNumber(it)
