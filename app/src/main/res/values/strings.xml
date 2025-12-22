@@ -1,3 +1,48 @@
 <resources>
-    <string name="app_name">AsuntosInstitucionalesInmemorial</string>
+    <string name="app_name">S-5ync</string>
+
+    <string name="error">Error</string>
+    <string name="database_error">Error al actualizar datos desde JSON</string>
+    <string name="database_success">Datos actualizados desde JSON</string>
+    <string name="save_error">Error al guardar los datos</string>
+    <string name="save_success">Datos guardados correctamente</string>
+    <string name="firestore_error">Error al actualizar datos en Firestore</string>
+    <string name="json_error">Error al actualizar: el archivo JSON está vacío</string>
+    <string name="firestore_success">Datos actualizados en Firestore</string>
+    <string name="search_object_error">Error al recuperar el objeto seleccionado</string>
+    <string name="type_object_error">No se reconoce el tipo de objeto seleccionado</string>
+
+    <string name="motto_first">Por España y por el Rey</string>
+    <string name="motto_second">Adelante Inmemorial</string>
+    <string name="all">Todos</string>
+    <string name="placeholder_regalos">Nombre del regalo…</string>
+    <string name="placeholder_material">Nombre del material…</string>
+    <string name="placeholder_evento">Nombre del invitado…</string>
+    <string name="regalos_screen_title">Inventario regalos protocolo</string>
+    <string name="material_screen_title">Inventario material protocolo</string>
+    <string name="events_screen_title">Eventos en curso</string>
+    <string name="guests_screen_title">Invitados</string>
+    <string name="first_visit">1ª Visita</string>
+    <string name="second_visit">2ª Visita</string>
+    <string name="no_visit">Sin visita</string>
+    <string name="yard_relevo">Relevo: Patio</string>
+    <string name="garden_relevo">Relevo: Jardines</string>
+    <string name="no_relevo">Sin relevo</string>
+    <string name="agape_access">Con entrada vino</string>
+    <string name="agape_deny">Sin entrada vino</string>
+
+    <string name="regalos_button">Actualizar Regalos desde JSON Firebase</string>
+    <string name="material_button">Actualizar Material desde JSON Firebase</string>
+    <string name="eventos_button">Actualizar Eventos desde JSON Firebase</string>
+    <string name="regalos_dialog_title">Eliminar y actualizar regalos</string>
+    <string name="material_dialog_title">Eliminar y actualizar material</string>
+    <string name="eventos_dialog_title">Eliminar y actualizar eventos</string>
+    <string name="guest_dialog_title">" ya ha llegado?"</string>
+    <string name="event_detail_dialog_title">¡ATENCIÓN!</string>
+    <string name="regalos_dialog_text">¿Está seguro que quiere eliminar el listado de regalos actual y subir el nuevo listado desde el JSON de Firebase Storage?</string>
+    <string name="material_dialog_text">¿Está seguro que quiere eliminar el listado de material actual y subir el nuevo listado desde el JSON de Firebase Storage?</string>
+    <string name="eventos_dialog_text">¿Está seguro que quiere eliminar el listado de eventos actual y subir el nuevo listado desde el JSON de Firebase Storage?</string>
+    <string name="guest_dialog_text">Marque SI cuando el invitado haya accedido</string>
+    <string name="event_detail_dialog_text">¿Seguro que desea sobreescribir la lista de invitados desde JSON?</string>
+
 </resources>

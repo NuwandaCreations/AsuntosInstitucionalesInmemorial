@@ -3,6 +3,14 @@ package com.example.asuntosinstitucionalesinmemorial.util
 class Constants {
     companion object {
         const val BASE_URL = "https://api.jsonbin.io/"
-        const val JSON_BIN = "v3/qs/68868f977b4b8670d8a83e04"
+        const val EMPTY_NAME = "SIN NOMBRE"
+        const val REGALOS = "regalos"
+        const val MATERIAL = "material"
+        const val EVENTOS = "eventos"
+        const val STORAGE = "storage"
+        const val GUESTS = "invitados"
+        const val REGALOS_JSON = "0-otros/regalos.json"
+        const val MATERIAL_JSON = "0-otros/material.json"
+        const val GUESTS_JSON = "1-eventos/"
     }
 }
