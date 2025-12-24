@@ -1,37 +1,46 @@
 package com.example.asuntosinstitucionalesinmemorial.ui.events
 
-import androidx.compose.foundation.gestures.ScrollableDefaults
+import android.content.res.Configuration
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.example.asuntosinstitucionalesinmemorial.R
-import com.example.asuntosinstitucionalesinmemorial.ui.core.components.Card
 import com.example.asuntosinstitucionalesinmemorial.ui.core.components.EventsCard
+import com.example.asuntosinstitucionalesinmemorial.ui.core.util.dateToTimestamp
 import com.example.asuntosinstitucionalesinmemorial.ui.theme.Typography
+import com.google.firebase.Timestamp
 import org.koin.compose.viewmodel.koinViewModel
-import java.text.SimpleDateFormat
-import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventsScreen(
     eventsViewModel: EventsViewModel = koinViewModel(),
@@ -41,8 +50,24 @@ fun EventsScreen(
     goToCreateEvent: () -> Unit
 ) {
     val uiState by eventsViewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        eventsViewModel.getEventsFirestore()
+    }
 
-    eventsViewModel.getEventsFirestore()
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    val nowTimestamp = Timestamp.now()
+    val listStartIndex = uiState.events.indexOfFirst { event ->
+        val eventTimestamp = dateToTimestamp(event.fecha)
+        if (eventTimestamp != null) {
+            eventTimestamp >= nowTimestamp
+        } else false
+    }.takeIf { it >= 0 } ?: 0
+    val listState = rememberLazyListState()
+    LaunchedEffect(listStartIndex) {
+        listState.scrollToItem(listStartIndex)
+    }
 
     Scaffold(
         containerColor = colorResource(R.color.onPrimaryBackground),
@@ -53,39 +78,65 @@ fun EventsScreen(
                 Icon(Icons.Default.Add, null)
             }
         },
-        floatingActionButtonPosition = FabPosition.EndOverlay
+        floatingActionButtonPosition = FabPosition.EndOverlay,
     ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 90.dp, horizontal = 20.dp)
+                .alpha(0.7f)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_rinf1),
+                contentDescription = "rinf1",
+                Modifier
+                    .fillMaxSize()
+                    .padding(20.dp)
+            )
+        }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
+            verticalArrangement = Arrangement.Top,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
         ) {
-            Text(
-                text = stringResource(R.string.events_screen_title),
-                modifier = Modifier.padding(top = 10.dp),
-                style = Typography.titleMedium
-            )
-            LazyColumn(
-                flingBehavior = ScrollableDefaults.flingBehavior(),
-                state = rememberLazyListState(),
+            var bottomPadding = 1.dp
+            if (!isLandscape) {
+                bottomPadding = 70.dp
+                Text(
+                    text = stringResource(R.string.events_screen_title),
+                    style = Typography.titleMedium
+                )
+            }
+            LazyRow(
+                state = listState,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(700.dp),
+                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = bottomPadding)
             ) {
                 items(uiState.events) { evento ->
                     EventsCard(
                         name = evento.nombre.toString(),
                         date = evento.fecha.toString(),
+                        place = evento.lugar.toString(),
                         photoUrl = evento.imagen.toString(),
                         onClick = {
                             if (evento.esRelevoGuardia == true) {
                                 goToRelevoGuests(evento.id.toString())
                             } else {
                                 goToEventGuests(evento.id.toString())
-
                             }
                         },
-                        onLongClick = { goToEventDetail(evento.id.toString()) }
+                        onLongClick = {
+                            goToEventDetail(evento.id.toString())
+                        }
                     )
                 }
             }
         }
     }
-
 }

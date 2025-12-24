@@ -36,7 +36,7 @@ fun Card(material: String, category: String, photoUrl: String, onItemClick: (Str
                 shape = RoundedCornerShape(7.dp) // Debe coincidir con el shape del card
             ),
         colors = CardDefaults.elevatedCardColors(
-            containerColor = colorResource(R.color.onPrimary),
+            containerColor = colorResource(R.color.onPrimaryTransparent),
             contentColor = colorResource(R.color.white)
         ),
         shape = RoundedCornerShape(7.dp)

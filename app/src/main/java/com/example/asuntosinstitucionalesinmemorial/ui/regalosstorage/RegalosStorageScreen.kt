@@ -1,7 +1,10 @@
 package com.example.asuntosinstitucionalesinmemorial.ui.regalosstorage
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.ScrollableDefaults
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,7 +24,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,6 +60,20 @@ fun RegalosStorageScreen(
         },
         floatingActionButtonPosition = FabPosition.EndOverlay
     ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 90.dp, horizontal = 20.dp)
+                .alpha(0.7f)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_rinf1),
+                contentDescription = "rinf1",
+                Modifier
+                    .fillMaxSize()
+                    .padding(20.dp)
+            )
+        }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()

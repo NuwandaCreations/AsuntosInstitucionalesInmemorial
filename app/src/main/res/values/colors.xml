@@ -9,7 +9,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="white_transparent">#6AFFFFFF</color>
     <color name="onPrimary">#80324B</color>
+    <color name="onPrimaryTransparent">#E780324B</color>
     <color name="onPrimaryBackground">#4D4449</color>
     <color name="onError">#B71C1C</color>
     <color name="onSuccess">#1B5E20</color>
+    <color name="onSuccessTransparent">#EF1B5E20</color>
 </resources>

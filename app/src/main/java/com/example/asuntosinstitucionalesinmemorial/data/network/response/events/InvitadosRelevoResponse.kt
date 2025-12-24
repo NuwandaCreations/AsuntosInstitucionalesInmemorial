@@ -4,19 +4,20 @@ import com.example.asuntosinstitucionalesinmemorial.domain.model.InvitadosRelevo
 import com.google.gson.annotations.SerializedName
 
 data class InvitadosRelevoResponse(
-    @SerializedName("EMPLEO") val empleo: String,
-    @SerializedName("TRATAMIENTO") val tratamiento: String,
-    @SerializedName("APELLIDOS") val apellidos: String,
-    @SerializedName("NOMBRE") val nombre: String,
-    @SerializedName("VEHÍCULO (MARCA, MODELO, COLOR Y MATRÍCULA)") val vehiculo: String,
-    @SerializedName("OBSERVACIONES") val observaciones: String,
-    @SerializedName("1ª VISITA") val visita1: String,
-    @SerializedName("2ª VISITA") val visita2: String,
-    @SerializedName("CONC") val concierto: String,
-    @SerializedName("RELEVO") val patio: String,
-    @SerializedName("JARDINES") val jardines: String,
-    @SerializedName("VINO") val vino: String,
-    @SerializedName("NOTA PROTOCOLO") val notaProtocolo: String,
+    @SerializedName("EMPLEO") val empleo: String = "",
+    @SerializedName("TRATAMIENTO") val tratamiento: String = "",
+    @SerializedName("APELLIDOS") val apellidos: String = "",
+    @SerializedName("NOMBRE") val nombre: String = "",
+    @SerializedName("VEHÍCULO (MARCA, MODELO, COLOR Y MATRÍCULA)") val vehiculo: String = "",
+    @SerializedName("OBSERVACIONES") val observaciones: String = "",
+    @SerializedName("1ª VISITA") val visita1: String = "",
+    @SerializedName("2ª VISITA") val visita2: String = "",
+    @SerializedName("CONC") val concierto: String = "",
+    @SerializedName("RELEVO") val patio: String = "",
+    @SerializedName("JARDINES") val jardines: String = "",
+    @SerializedName("VINO") val vino: String = "",
+    @SerializedName("NOTA PROTOCOLO") val notaProtocolo: String = "",
+    @SerializedName("COLOR") val color: String = ""
 )
 
 fun InvitadosRelevoResponse.toDomain(): InvitadosRelevo {
@@ -33,6 +34,7 @@ fun InvitadosRelevoResponse.toDomain(): InvitadosRelevo {
         jardines = jardines,
         vino = vino,
         notaProtocolo = notaProtocolo,
-        accedido = false
+        accedido = false,
+        color = color
     )
 }

@@ -6,5 +6,6 @@ data class Invitados(
     val cargo: String = "",
     val vehiculo: String = "",
     var accedido: Boolean = false,
-    val foto: String = ""
+    val foto: String = "",
+    val color: String = ""
 )

@@ -6,15 +6,15 @@ import com.example.asuntosinstitucionalesinmemorial.data.network.response.events
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Evento
 import com.example.asuntosinstitucionalesinmemorial.domain.model.Invitados
 import com.example.asuntosinstitucionalesinmemorial.domain.model.InvitadosRelevo
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetEventGuestsStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetGuestsPhotosStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetRelevoGuestsStorageUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetEventByIdFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetEventGuestsFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetEventsFirestoreUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetRelevoGuestsStorageUseCase
+import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetRelevoGuestsFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetGuestFirestoreUseCase
 import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetRelevoGuestFirestoreUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetEventGuestsStorageUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetGuestsPhotosStorageUseCase
-import com.example.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetRelevoGuestsFirestoreUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,7 +39,8 @@ class EventsViewModel(
     fun getEventsFirestore() {
         viewModelScope.launch(Dispatchers.IO) {
             getEventsFirestoreUseCase().collect { events ->
-                _uiState.update { it.copy(events = events.map { evento -> evento.toDomain() }) }
+                val sortedEvents = events.sortedBy { it.fecha }
+                _uiState.update { it.copy(events = sortedEvents.map { evento -> evento.toDomain() }) }
             }
         }
     }
@@ -143,7 +144,8 @@ class EventsViewModel(
             try {
                 val photoNames = getGuestsPhotosStorageUseCase()
                 _uiState.update { it.copy(guestsPhotos = photoNames) }
-            } catch (_: Exception) { }
+            } catch (_: Exception) {
+            }
         }
     }
 

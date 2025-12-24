@@ -4,9 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
@@ -30,7 +28,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.asuntosinstitucionalesinmemorial.R
 import com.example.asuntosinstitucionalesinmemorial.ui.core.components.BasicDialog
-import com.example.asuntosinstitucionalesinmemorial.ui.core.components.MyButton
 import com.example.asuntosinstitucionalesinmemorial.ui.core.components.MySnackbar
 import com.example.asuntosinstitucionalesinmemorial.ui.core.components.ProgressIndicator
 import org.koin.compose.viewmodel.koinViewModel
@@ -84,15 +81,6 @@ fun HomeScreen(
                 .padding(vertical = 90.dp, horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-//            FrontPage()
-//            MyButton(stringResource(R.string.regalos_button)) {
-//                buttonAction = ButtonAction.REGALOS
-//                homeViewModel.showDialog(true)
-//            }
-//            MyButton(stringResource(R.string.material_button)) {
-//                buttonAction = ButtonAction.MATERIAL
-//                homeViewModel.showDialog(true)
-//            }
             Box(
                 modifier = Modifier
                     .weight(1f),
@@ -167,32 +155,3 @@ fun CreateDialog(buttonAction: ButtonAction, confirmAction: () -> Unit, dismissA
         dismissButton = { dismissAction() }
     )
 }
-
-//@Composable
-//fun FrontPage() {
-//    Text(
-//        text = stringResource(R.string.motto_first),
-//        textAlign = TextAlign.Center,
-//        fontSize = 25.sp,
-//        fontWeight = FontWeight.Bold,
-//        fontFamily = FontFamily(Font(R.font.inknut_antiqua_semibold)),
-//        color = colorResource(R.color.white),
-//        modifier = Modifier.padding(bottom = 10.dp)
-//    )
-//    Image(
-//        painter = painterResource(R.drawable.ic_rinf1),
-//        contentDescription = "rinf1",
-//        Modifier
-//            .size(400.dp)
-//            .padding(20.dp)
-//    )
-//    Text(
-//        text = stringResource(R.string.motto_second),
-//        textAlign = TextAlign.Center,
-//        fontSize = 25.sp,
-//        fontWeight = FontWeight.Bold,
-//        fontFamily = FontFamily(Font(R.font.inknut_antiqua_semibold)),
-//        color = colorResource(R.color.white),
-//        modifier = Modifier.padding(top = 10.dp, bottom = 20.dp)
-//    )
-//}

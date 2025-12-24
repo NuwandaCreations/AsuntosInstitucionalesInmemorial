@@ -14,5 +14,6 @@ data class InvitadosRelevo(
     val vino: String = "",
     val notaProtocolo: String = "",
     var accedido: Boolean = false,
-    val foto: String = ""
+    val foto: String = "",
+    val color: String = ""
 )
