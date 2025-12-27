@@ -9,11 +9,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.asuntosinstitucionalesinmemorial"
+    namespace = "com.nuwandacreations.asuntosinstitucionalesinmemorial"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.asuntosinstitucionalesinmemorial"
+        applicationId = "com.nuwandacreations.asuntosinstitucionalesinmemorial"
         minSdk = 25
         targetSdk = 36
         versionCode = 1

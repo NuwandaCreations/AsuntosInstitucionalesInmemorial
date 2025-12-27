@@ -1,0 +1,122 @@
+package com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.regalosstorage
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.ScrollableDefaults
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.R
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.Card
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyTextField
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.theme.Typography
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun RegalosStorageScreen(
+    regalosStorageViewModel: RegalosStorageViewModel = koinViewModel(),
+    goToDetail: (String) -> Unit,
+    goToEdit: () -> Unit
+) {
+    val uiState by regalosStorageViewModel.uiState.collectAsStateWithLifecycle()
+    var searchText by rememberSaveable { mutableStateOf("") }
+    var expandedMenu by rememberSaveable { mutableStateOf(false) }
+    var categoriaMenu by rememberSaveable { mutableStateOf("Todos") }
+
+    regalosStorageViewModel.getRegalosFirestore()
+
+    Scaffold(
+        containerColor = colorResource(R.color.onPrimaryBackground),
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                // TODO goToEdit()
+            }) {
+                Icon(Icons.Default.Add, null)
+            }
+        },
+        floatingActionButtonPosition = FabPosition.EndOverlay
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 90.dp, horizontal = 20.dp)
+                .alpha(0.7f)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_rinf1),
+                contentDescription = "rinf1",
+                Modifier
+                    .fillMaxSize()
+                    .padding(20.dp)
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = stringResource(R.string.regalos_screen_title),
+                modifier = Modifier.padding(top = 10.dp),
+                style = Typography.titleMedium
+            )
+
+            MyTextField(
+                searchText = searchText,
+                placeholderText = stringResource(R.string.placeholder_regalos),
+                expandedMenu = expandedMenu,
+                regalos = uiState.storage.regalos,
+                onExpandedMenu = { expandedMenu = it },
+                onSearchText = { searchText = it },
+                onCategoriaMenu = { categoriaMenu = it }
+            )
+
+            LazyColumn(
+                flingBehavior = ScrollableDefaults.flingBehavior(),
+                state = rememberLazyListState(),
+            ) {
+                items(uiState.storage.regalos) { regalo ->
+                    if (categoriaMenu == stringResource(R.string.all) || categoriaMenu == regalo.categoria.toString()) {
+                        if (searchText.isEmpty() || regalo.objeto.toString()
+                                .contains(searchText, ignoreCase = true)
+                        ) {
+                            if (regalo.foto.isEmpty()) {
+                                regalosStorageViewModel.getPhoto(regalo)
+                            }
+                            Card(
+                                material = "${regalo.objeto}",
+                                category = "${regalo.categoria}",
+                                photoUrl = regalo.foto
+                            ) {
+                                goToDetail(regalo.objeto.toString())
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
