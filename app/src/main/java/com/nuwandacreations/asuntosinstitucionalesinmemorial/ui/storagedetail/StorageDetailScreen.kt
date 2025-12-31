@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.R
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.ProgressIndicator
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyProgressIndicator
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.home.ButtonAction
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.theme.Typography
 import org.koin.compose.viewmodel.koinViewModel
@@ -76,7 +76,7 @@ fun StorageDetailScreen(
         containerColor = colorResource(R.color.onPrimaryBackground)
     ) { padding ->
         if (uiState.progressVisibility) {
-            ProgressIndicator()
+            MyProgressIndicator()
         }
         when (type) {
             ButtonAction.REGALOS -> {

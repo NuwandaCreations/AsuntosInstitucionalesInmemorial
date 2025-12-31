@@ -31,7 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.R
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.Card
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyCard
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyTextField
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.theme.Typography
 import org.koin.compose.viewmodel.koinViewModel
@@ -106,7 +106,7 @@ fun RegalosStorageScreen(
                             if (regalo.foto.isEmpty()) {
                                 regalosStorageViewModel.getPhoto(regalo)
                             }
-                            Card(
+                            MyCard(
                                 material = "${regalo.objeto}",
                                 category = "${regalo.categoria}",
                                 photoUrl = regalo.foto

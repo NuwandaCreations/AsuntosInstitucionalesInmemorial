@@ -33,6 +33,7 @@ interface FirebaseRepository {
     fun getRelevoGuestByIdFirestore(evento: String, invitado: String): Flow<InvitadosRelevo>
     suspend fun deleteRegalosFirestore(regalos: Regalos)
     suspend fun deleteMaterialFirestore(material: Material)
+    suspend fun deleteEventFirestore(eventId: String)
     suspend fun updateRegalosFirestore(regalosList: List<Regalos>)
     suspend fun updateMaterialFirestore(materialList: List<Material>)
 }

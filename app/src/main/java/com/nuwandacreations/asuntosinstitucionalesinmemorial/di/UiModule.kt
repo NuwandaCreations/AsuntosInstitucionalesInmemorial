@@ -1,5 +1,6 @@
 package com.nuwandacreations.asuntosinstitucionalesinmemorial.di
 
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.events.CreateEventViewModel
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.events.EventsViewModel
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.guests.GuestDetailViewModel
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.home.HomeViewModel
@@ -56,6 +57,12 @@ val viewModelModule = module {
             get(),
             get(),
             get(),
+            get(),
+            get()
+        )
+    }
+    viewModel {
+        CreateEventViewModel(
             get()
         )
     }

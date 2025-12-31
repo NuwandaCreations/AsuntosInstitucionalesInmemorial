@@ -29,7 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.R
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.BasicDialog
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MySnackbar
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.ProgressIndicator
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyProgressIndicator
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -124,7 +124,7 @@ fun HomeScreen(
 
 
         if (uiState.isLoading) {
-            ProgressIndicator()
+            MyProgressIndicator()
         }
 
         if (uiState.snackbarText != null) {

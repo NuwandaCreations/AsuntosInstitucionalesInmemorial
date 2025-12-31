@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.R
 
 @Composable
-fun ProgressIndicator() {
+fun MyProgressIndicator() {
     Box(
         modifier = Modifier
             .fillMaxSize()

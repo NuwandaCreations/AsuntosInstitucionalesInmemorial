@@ -24,7 +24,7 @@ import coil.compose.AsyncImage
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.R
 
 @Composable
-fun Card(material: String, category: String, photoUrl: String, onItemClick: (String) -> Unit) {
+fun MyCard(material: String, category: String, photoUrl: String, onItemClick: (String) -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()

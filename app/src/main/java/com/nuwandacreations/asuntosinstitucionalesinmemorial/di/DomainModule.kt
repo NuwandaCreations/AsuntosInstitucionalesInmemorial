@@ -4,6 +4,7 @@ import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eve
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetEventPhotoByIdStorageUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetGuestsPhotosStorageUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetRelevoGuestsStorageUseCase
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.DeleteEventFirestoreUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetEventByIdFirestoreUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetEventGuestsFirestoreUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetEventsFirestoreUseCase
@@ -83,4 +84,5 @@ val domainModule = module {
     single { SetEventFirestoreUseCase(get()) }
     single { SetGuestFirestoreUseCase(get()) }
     single { SetRelevoGuestFirestoreUseCase(get()) }
+    single { DeleteEventFirestoreUseCase(get()) }
 }

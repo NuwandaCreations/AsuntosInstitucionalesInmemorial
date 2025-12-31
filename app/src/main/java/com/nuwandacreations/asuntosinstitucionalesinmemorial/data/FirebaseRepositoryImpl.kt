@@ -21,6 +21,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ListResult
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.EVENTS_PHOTOS_JPG
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.GUESTS_PHOTOS_JPG
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
@@ -208,6 +209,10 @@ class FirebaseRepositoryImpl(
 
     override suspend fun deleteMaterialFirestore(material: Material) {
         firestore.collection(MATERIAL).document("${material.objeto}").delete()
+    }
+
+    override suspend fun deleteEventFirestore(eventId: String) {
+        firestore.collection(EVENTOS).document(eventId).delete()
     }
 
     override suspend fun updateRegalosFirestore(regalosList: List<Regalos>) {

@@ -1,29 +1,27 @@
 package com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.model
 
+import android.os.Parcelable
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.data.network.response.events.EventsResponse
-import com.google.firebase.Timestamp
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.dateToTimestamp
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Evento(
-    val id: String? = null,
-    val nombre: String? = null,
-    val descripcion: String? = null,
-    val fecha: String? = null,
-    val lugar: String? = null,
-    val imagen: String? = null,
-    val esRelevoGuardia: Boolean? = null
-)
+    var id: String? = null,
+    var nombre: String? = null,
+    var descripcion: String? = null,
+    var fecha: String? = null,
+    var lugar: String? = null,
+    var imagen: String? = null,
+    var esRelevoGuardia: Boolean = false
+) : Parcelable
 
 fun Evento.toData(): EventsResponse {
-    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    val date = sdf.parse(fecha ?: "")
-    val timestamp = date?.let { Timestamp(it) }
     return EventsResponse(
         id = id,
         nombre = nombre,
         descripcion = descripcion,
-        fecha = timestamp,
+        fecha = dateToTimestamp(fecha),
         lugar = lugar,
         imagen = imagen,
         esRelevoGuardia = esRelevoGuardia

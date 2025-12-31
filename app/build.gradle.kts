@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.firebase.crashlytics)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -16,8 +17,8 @@ android {
         applicationId = "com.nuwandacreations.asuntosinstitucionalesinmemorial"
         minSdk = 25
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

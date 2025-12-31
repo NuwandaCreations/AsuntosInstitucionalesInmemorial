@@ -59,14 +59,19 @@ fun EventsScreen(
 
     val nowTimestamp = Timestamp.now()
     val listStartIndex = uiState.events.indexOfFirst { event ->
-        val eventTimestamp = dateToTimestamp(event.fecha)
-        if (eventTimestamp != null) {
-            eventTimestamp >= nowTimestamp
-        } else false
+        if (event.fecha.isNullOrEmpty()) return@indexOfFirst false
+        else {
+            val eventTimestamp = dateToTimestamp(event.fecha)
+            eventTimestamp?.let { it >= nowTimestamp } ?: false
+        }
     }.takeIf { it >= 0 } ?: 0
+
     val listState = rememberLazyListState()
     LaunchedEffect(listStartIndex) {
         listState.scrollToItem(listStartIndex)
+    }
+
+    LaunchedEffect(uiState.events) {
         uiState.events.forEach { evento ->
             if (evento.imagen.isNullOrEmpty()) {
                 eventsViewModel.getEventPhotoByIdStorage(evento)
@@ -125,19 +130,21 @@ fun EventsScreen(
             ) {
                 items(uiState.events) { evento ->
                     EventsCard(
-                        name = evento.nombre.toString(),
-                        date = evento.fecha.toString(),
-                        place = evento.lugar.toString(),
-                        photoUrl = evento.imagen.toString(),
+                        name = evento.nombre ?: "",
+                        date = evento.fecha ?: "",
+                        place = evento.lugar ?: "",
+                        photoUrl = evento.imagen ?: "",
                         onClick = {
-                            if (evento.esRelevoGuardia == true) {
+                            if (evento.esRelevoGuardia) {
                                 goToRelevoGuests(evento.id.toString())
                             } else {
                                 goToEventGuests(evento.id.toString())
                             }
                         },
                         onLongClick = {
-                            goToEventDetail(evento.id.toString())
+                            evento.id?.let {
+                                goToEventDetail(it)
+                            }
                         }
                     )
                 }

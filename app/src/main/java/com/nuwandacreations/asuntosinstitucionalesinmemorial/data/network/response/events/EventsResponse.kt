@@ -2,6 +2,7 @@ package com.nuwandacreations.asuntosinstitucionalesinmemorial.data.network.respo
 
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.model.Evento
 import com.google.firebase.Timestamp
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.timestampToDate
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -12,18 +13,15 @@ data class EventsResponse(
     val fecha: Timestamp? = null,
     val lugar: String? = null,
     val imagen: String? = null,
-    val esRelevoGuardia: Boolean? = null
+    val esRelevoGuardia: Boolean = false
 )
 
 fun EventsResponse.toDomain(): Evento {
-    val date = fecha?.toDate()
-    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    val formatedDate = sdf.format(date ?: "")
     return Evento(
         id = id,
         nombre = nombre,
         descripcion = descripcion,
-        fecha = formatedDate,
+        fecha = timestampToDate(fecha),
         lugar = lugar,
         imagen = imagen,
         esRelevoGuardia = esRelevoGuardia

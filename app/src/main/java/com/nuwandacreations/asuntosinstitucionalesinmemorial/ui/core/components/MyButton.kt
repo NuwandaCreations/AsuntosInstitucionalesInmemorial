@@ -15,7 +15,7 @@ fun MyButton(text: String, onClick: () -> Unit) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 10.dp),
+            .padding(horizontal = 50.dp, vertical = 10.dp),
         onClick = { onClick() },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.White,

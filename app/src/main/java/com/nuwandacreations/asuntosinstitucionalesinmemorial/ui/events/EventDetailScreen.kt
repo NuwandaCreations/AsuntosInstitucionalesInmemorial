@@ -9,6 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -23,35 +24,62 @@ import coil.compose.AsyncImage
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.R
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.BasicDialog
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyButton
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyProgressIndicator
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.theme.Typography
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.DETAIL_EVENT_DELETE_BTN
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.DETAIL_EVENT_GUEST_BTN
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun EventDetailScreen(
     eventsViewModel: EventsViewModel = koinViewModel(),
-    event: String
+    event: String,
+    navigateBack: () -> Unit
 ) {
     val uiState by eventsViewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
 
-    eventsViewModel.getEventByIdFirestore(event)
+    LaunchedEffect(key1 = Unit) {
+        eventsViewModel.getEventByIdFirestore(event)
+    }
 
     Scaffold(
         containerColor = colorResource(R.color.onPrimaryBackground)
     ) { padding ->
         if (uiState.isDialogShown) {
-            SetGuestsFromStorage(
-                confirmAction = {
-                    eventsViewModel.getEventGuestsStorage(
-                        uiState.event?.id ?: "",
-                        uiState.event?.esRelevoGuardia ?: false
+            when (uiState.dialogType) {
+                DialogType.DELETE_EVENT -> {
+                    DeleteEventFromFirebase(
+                        confirmAction = {
+                            eventsViewModel.showDialog(false)
+                            navigateBack()
+                            uiState.event?.id?.let { eventId ->
+                                eventsViewModel.deleteEventFirestore(eventId)
+                            }
+                        },
+                        dismissAction = {
+                            eventsViewModel.showDialog(false)
+                        }
                     )
-                    eventsViewModel.showDialog(false)
-                },
-                dismissAction = {
-                    eventsViewModel.showDialog(false)
                 }
-            )
+
+                DialogType.SET_GUEST -> {
+                    SetGuestsFromStorage(
+                        confirmAction = {
+                            eventsViewModel.getEventGuestsStorage(
+                                uiState.event?.id ?: "",
+                                uiState.event?.esRelevoGuardia ?: false
+                            )
+                            eventsViewModel.showDialog(false)
+                        },
+                        dismissAction = {
+                            eventsViewModel.showDialog(false)
+                        }
+                    )
+                }
+
+                else -> {}
+            }
         }
 
         Column(
@@ -98,10 +126,22 @@ fun EventDetailScreen(
                     textAlign = TextAlign.Justify,
                     color = Color.White
                 )
-                MyButton(text = "Subir invitados desde JSON") {
-                    eventsViewModel.showDialog(true)
+                MyButton(text = DETAIL_EVENT_GUEST_BTN) {
+                    eventsViewModel.apply {
+                        updateDialogType(DialogType.SET_GUEST)
+                        showDialog(true)
+                    }
+                }
+                MyButton(text = DETAIL_EVENT_DELETE_BTN) {
+                    eventsViewModel.apply {
+                        updateDialogType(DialogType.DELETE_EVENT)
+                        showDialog(true)
+                    }
                 }
             }
+        }
+        if (uiState.isLoading) {
+            MyProgressIndicator()
         }
     }
 }
@@ -111,6 +151,20 @@ fun SetGuestsFromStorage(confirmAction: () -> Unit, dismissAction: () -> Unit) {
     BasicDialog(
         title = stringResource(R.string.event_detail_dialog_title),
         text = stringResource(R.string.event_detail_dialog_text),
+        confirmButton = {
+            confirmAction()
+        },
+        dismissButton = {
+            dismissAction()
+        }
+    )
+}
+
+@Composable
+fun DeleteEventFromFirebase(confirmAction: () -> Unit, dismissAction: () -> Unit) {
+    BasicDialog(
+        title = stringResource(R.string.event_detail_dialog_title),
+        text = stringResource(R.string.event_delete_dialog_text),
         confirmButton = {
             confirmAction()
         },

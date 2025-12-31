@@ -46,9 +46,9 @@ import coil.compose.AsyncImage
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.R
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.model.Invitados
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyTextField
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.hexToColorInt
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.events.EventsViewModel
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.theme.Typography
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.hexToColorInt
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

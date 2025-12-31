@@ -10,6 +10,7 @@ import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eve
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetEventPhotoByIdStorageUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetGuestsPhotosStorageUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firebasestorage.GetRelevoGuestsStorageUseCase
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.DeleteEventFirestoreUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetEventByIdFirestoreUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetEventGuestsFirestoreUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetEventsFirestoreUseCase
@@ -35,7 +36,8 @@ class EventsViewModel(
     val setGuestFirestoreUseCase: SetGuestFirestoreUseCase,
     val setRelevoGuestFirestoreUseCase: SetRelevoGuestFirestoreUseCase,
     val getGuestsPhotosStorageUseCase: GetGuestsPhotosStorageUseCase,
-    val getEventPhotoByIdStorageUseCase: GetEventPhotoByIdStorageUseCase
+    val getEventPhotoByIdStorageUseCase: GetEventPhotoByIdStorageUseCase,
+    val deleteEventFirestoreUseCase: DeleteEventFirestoreUseCase
 ) : ViewModel() {
     val _uiState = MutableStateFlow(EventsUiState())
     val uiState: StateFlow<EventsUiState> = _uiState
@@ -74,6 +76,7 @@ class EventsViewModel(
 
     fun getEventGuestsStorage(event: String, esRelevoGuardia: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update { it.copy(isLoading = true) }
             try {
                 if (esRelevoGuardia) {
                     val invitadosRelevo = getRelevoGuestsStorageUseCase(event).map { invitado ->
@@ -102,6 +105,17 @@ class EventsViewModel(
                 }
             } catch (_: Exception) {
 
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
+    fun deleteEventFirestore(eventId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                deleteEventFirestoreUseCase(eventId)
+            } catch (_: Exception) {
             }
         }
     }
@@ -179,6 +193,10 @@ class EventsViewModel(
         }
     }
 
+    fun updateDialogType(dialogType: DialogType) {
+        _uiState.update { it.copy(dialogType = dialogType) }
+    }
+
     fun showDialog(isShown: Boolean) {
         _uiState.update { it.copy(isDialogShown = isShown) }
     }
@@ -190,5 +208,12 @@ data class EventsUiState(
     val invitados: List<Invitados> = emptyList(),
     val invitadosRelevo: List<InvitadosRelevo> = emptyList(),
     val guestsPhotos: List<Pair<String, String>> = emptyList(),
-    val isDialogShown: Boolean = false
+    val dialogType: DialogType? = null,
+    val isDialogShown: Boolean = false,
+    val isLoading: Boolean = false
 )
+
+enum class DialogType {
+    SET_GUEST,
+    DELETE_EVENT
+}
