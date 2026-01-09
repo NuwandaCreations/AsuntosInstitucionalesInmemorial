@@ -79,6 +79,16 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
+    // CameraX
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+    //ML Kit barcode scanner
+    implementation(libs.barcode.scanning)
+    // Permisos (Accompanist)
+    implementation(libs.accompanist.permissions)
+    //Testing
+    implementation(libs.mockk.unit)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

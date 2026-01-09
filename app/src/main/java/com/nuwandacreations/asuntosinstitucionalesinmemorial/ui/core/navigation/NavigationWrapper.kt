@@ -14,10 +14,10 @@ import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.events.EventDeta
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.events.EventsScreen
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.guests.EventGuestsScreen
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.guests.GuestDetailScreen
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.guests.RelevoGuestsScreen
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.home.ButtonAction
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.home.HomeScreen
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.materialstorage.MaterialStorageScreen
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.qrscanner.QrScannerScreen
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.regalosstorage.RegalosStorageScreen
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.storagedetail.StorageDetailScreen
 
@@ -67,8 +67,9 @@ fun NavigationWrapper() {
             composable<Events> {
                 EventsScreen(
                     goToEventDetail = { navController.navigate(EventDetail(event = it)) },
-                    goToEventGuests = { navController.navigate(EventGuests(event = it)) },
-                    goToRelevoGuests = { navController.navigate(RelevoGuests(event = it)) },
+                    goToEventGuests = { event, isRelevo ->
+                        navController.navigate(EventGuests(event = event, esRelevo = isRelevo))
+                    },
                     goToCreateEvent = { navController.navigate(CreateEvent) }
                 )
             }
@@ -88,6 +89,14 @@ fun NavigationWrapper() {
                 val event = navBackStackEntry.toRoute<EventGuests>()
                 EventGuestsScreen(
                     event = event.event,
+                    goToQrScanner = {
+                        navController.navigate(
+                            QrScanner(
+                                event = event.event,
+                                esRelevo = false
+                            )
+                        )
+                    },
                     goToGuestDetail = {
                         navController.navigate(
                             GuestDetail(
@@ -99,16 +108,16 @@ fun NavigationWrapper() {
                     }
                 )
             }
-            composable<RelevoGuests> { navBackStackEntry ->
-                val event = navBackStackEntry.toRoute<RelevoGuests>()
-                RelevoGuestsScreen(
-                    event = event.event,
+            composable<QrScanner> { navBackStackEntry ->
+                val event = navBackStackEntry.toRoute<QrScanner>()
+                QrScannerScreen(
+                    navigateBack = { navController.popBackStack() },
                     goToGuestDetail = {
                         navController.navigate(
                             GuestDetail(
                                 event = event.event,
                                 guest = it,
-                                esRelevo = true
+                                esRelevo = event.esRelevo
                             )
                         )
                     }
@@ -119,7 +128,8 @@ fun NavigationWrapper() {
                 GuestDetailScreen(
                     event = detail.event,
                     guest = detail.guest,
-                    esRelevo = detail.esRelevo
+                    esRelevo = detail.esRelevo,
+                    navigateBack = { navController.popBackStack() }
                 )
             }
         }

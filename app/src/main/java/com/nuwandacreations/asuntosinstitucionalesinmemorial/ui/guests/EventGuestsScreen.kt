@@ -24,6 +24,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -44,10 +46,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.R
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.model.Invitados
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyTextField
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.events.EventsViewModel
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.theme.Typography
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.AFIRMATIVE
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.NEGATIVE
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.SCANNER
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.hexToColorInt
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -55,19 +59,38 @@ import org.koin.compose.viewmodel.koinViewModel
 fun EventGuestsScreen(
     eventsViewModel: EventsViewModel = koinViewModel(),
     goToGuestDetail: (String) -> Unit,
-    event: String
+    goToQrScanner: () -> Unit,
+    event: String,
+    isRelevoGuardia: Boolean = false
 ) {
     val uiState by eventsViewModel.uiState.collectAsState()
     var searchText by rememberSaveable { mutableStateOf("") }
     var expandedMenu by rememberSaveable { mutableStateOf(false) }
     var categoriaMenu by rememberSaveable { mutableStateOf("Todos") }
-    var selectedGuest = Invitados()
-//TODO LOS INVITADOS DEL RELEVO AQUÍ NO FUNCIONA, HAY QUE HACER OTRA SCREEN O VER COMO ENCAJARLO
-    eventsViewModel.getEventGuests(event)
+
+    eventsViewModel.getEventGuests(event = event, esRelevoGuardia = isRelevoGuardia)
     eventsViewModel.getGuestsPhotos()
 
     Scaffold(
         containerColor = colorResource(R.color.onPrimaryBackground),
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                goToQrScanner()
+            }) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_qr_scanner),
+                        contentDescription = null,
+                        modifier = Modifier.size(50.dp)
+                    )
+                    Text(text = SCANNER)
+                }
+            }
+        }
     ) { padding ->
         Box(
             modifier = Modifier
@@ -89,15 +112,21 @@ fun EventGuestsScreen(
         ) {
             if (uiState.isDialogShown) {
                 CreateDialog(
-                    guest = selectedGuest,
+                    guestName = if (isRelevoGuardia) uiState.invitadoRelevoSelected.nombre else uiState.invitadoSelected.nombre,
                     confirmAction = {
-                        selectedGuest.accedido = true
-                        eventsViewModel.setGuestFirestore(event, selectedGuest)
+                        eventsViewModel.setGuestAccess(
+                            access = true,
+                            isRelevo = isRelevoGuardia,
+                            event = event
+                        )
                         eventsViewModel.showDialog(false)
                     },
                     denyAction = {
-                        selectedGuest.accedido = false
-                        eventsViewModel.setGuestFirestore(event, selectedGuest)
+                        eventsViewModel.setGuestAccess(
+                            access = false,
+                            isRelevo = isRelevoGuardia,
+                            event = event
+                        )
                         eventsViewModel.showDialog(false)
                     },
                     dismissAction = {
@@ -116,6 +145,7 @@ fun EventGuestsScreen(
                 placeholderText = stringResource(R.string.placeholder_evento),
                 expandedMenu = expandedMenu,
                 invitados = uiState.invitados,
+                invitadosRelevo = uiState.invitadosRelevo,
                 onExpandedMenu = { expandedMenu = it },
                 onSearchText = { searchText = it },
                 onCategoriaMenu = { categoriaMenu = it }
@@ -125,87 +155,79 @@ fun EventGuestsScreen(
                 flingBehavior = ScrollableDefaults.flingBehavior(),
                 state = rememberLazyListState(),
             ) {
-                items(uiState.invitados) { invitado ->
-                    eventsViewModel.searchPhoto(event, invitado)
-                    if (categoriaMenu == stringResource(R.string.all) || categoriaMenu == invitado.grupo) {
-                        if (searchText.isEmpty() || invitado.nombre
-                                .contains(searchText, ignoreCase = true)
-                        ) {
-                            ElevatedCard(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(10.dp, 5.dp)
-                                    .combinedClickable(
-                                        onClick = {
-                                            selectedGuest = invitado
-                                            eventsViewModel.showDialog(true)
-                                        },
-                                        onLongClick = {
-                                            selectedGuest = invitado
-                                            goToGuestDetail(invitado.nombre)
-                                        }
-                                    )
-                                    .border(
-                                        width = 0.6.dp,
-                                        color = colorResource(R.color.white),
-                                        shape = RoundedCornerShape(7.dp) // Debe coincidir con el shape del card
-                                    ),
-                                colors = CardDefaults.elevatedCardColors(
-                                    containerColor = if (invitado.accedido) colorResource(R.color.onSuccessTransparent) else colorResource(
-                                        R.color.onPrimaryTransparent
-                                    ),
-                                    contentColor = colorResource(R.color.white)
-                                ),
-                                shape = RoundedCornerShape(7.dp)
+                if (isRelevoGuardia) {
+                    items(uiState.invitadosRelevo) { relevoGuest ->
+                        if (relevoGuest.foto.isEmpty()) {
+                            eventsViewModel.searchPhoto(
+                                event = event,
+                                isRelevo = true,
+                                invitadoRelevo = relevoGuest
+                            )
+                        }
+                        if (categoriaMenu == stringResource(R.string.all) || categoriaMenu == relevoGuest.observaciones) {
+                            if (searchText.isEmpty() || relevoGuest.nombre
+                                    .contains(searchText, ignoreCase = true)
                             ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(IntrinsicSize.Min),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .width(20.dp)
-                                            .fillMaxHeight()
-                                            .background(Color(hexToColorInt(invitado.color) ?: 0))
-                                    )
-                                    Column(
-                                        modifier = Modifier.weight(3f),
-                                        verticalArrangement = Arrangement.Center
-                                    ) {
-                                        Text(
-                                            text = invitado.nombre,
-                                            modifier = Modifier.padding(
-                                                start = 15.dp,
-                                                end = 15.dp,
-                                                top = 5.dp,
-                                            )
+                                GuestElevatedCard(
+                                    onClick = {
+                                        eventsViewModel.selectGuest(
+                                            invitadoRelevo = relevoGuest,
+                                            isRelevo = true,
+                                            isShortClick = true
                                         )
-                                        val textGrupo =
-                                            if (invitado.cargo.isEmpty()) invitado.grupo else "${invitado.grupo} - ${invitado.cargo}"
-                                        Text(
-                                            text = textGrupo,
-                                            modifier = Modifier.padding(
-                                                start = 15.dp,
-                                                end = 15.dp,
-                                                bottom = 5.dp,
-                                            ),
-                                            color = colorResource(R.color.white_transparent)
+                                    },
+                                    onLongClick = {
+                                        eventsViewModel.selectGuest(
+                                            invitadoRelevo = relevoGuest,
+                                            isRelevo = true
                                         )
-                                    }
-                                    if (invitado.foto.isNotEmpty()) {
-                                        AsyncImage(
-                                            model = invitado.foto,
-                                            contentDescription = "photo",
-                                            contentScale = ContentScale.Fit,
-                                            modifier = Modifier
-                                                .size(90.dp)
-                                                .padding(7.dp)
-                                                .weight(1f)
+                                        goToGuestDetail(relevoGuest.nombre)
+                                    },
+                                    guestName = relevoGuest.nombre,
+                                    guestPosition = relevoGuest.empleo,
+                                    guestCompany = relevoGuest.observaciones,
+                                    guestAccessed = relevoGuest.accedido,
+                                    guestColor = relevoGuest.color,
+                                    guestPhoto = relevoGuest.foto
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    items(uiState.invitados) { guest ->
+                        if (guest.foto.isEmpty()) {
+                            eventsViewModel.searchPhoto(
+                                event = event,
+                                isRelevo = false,
+                                invitado = guest
+                            )
+                        }
+                        if (categoriaMenu == stringResource(R.string.all) || categoriaMenu == guest.grupo) {
+                            if (searchText.isEmpty() || guest.nombre
+                                    .contains(searchText, ignoreCase = true)
+                            ) {
+                                GuestElevatedCard(
+                                    onClick = {
+                                        eventsViewModel.selectGuest(
+                                            invitado = guest,
+                                            isRelevo = false,
+                                            isShortClick = true
                                         )
-                                    }
-                                }
+                                    },
+                                    onLongClick = {
+                                        eventsViewModel.selectGuest(
+                                            invitado = guest,
+                                            isRelevo = false
+                                        )
+                                        goToGuestDetail(guest.nombre)
+                                    },
+                                    guestName = guest.nombre,
+                                    guestPosition = guest.cargo,
+                                    guestCompany = guest.grupo,
+                                    guestAccessed = guest.accedido,
+                                    guestColor = guest.color,
+                                    guestPhoto = guest.foto
+                                )
                             }
                         }
                     }
@@ -216,8 +238,91 @@ fun EventGuestsScreen(
 }
 
 @Composable
+fun GuestElevatedCard(
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
+    guestName: String,
+    guestPosition: String,
+    guestCompany: String,
+    guestAccessed: Boolean,
+    guestColor: String,
+    guestPhoto: String
+) {
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp, 5.dp)
+            .combinedClickable(
+                onClick = { onClick() },
+                onLongClick = { onLongClick() }
+            )
+            .border(
+                width = 0.6.dp,
+                color = colorResource(R.color.white),
+                shape = RoundedCornerShape(7.dp) // Debe coincidir con el shape del card
+            ),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = if (guestAccessed) colorResource(R.color.onSuccessTransparent) else colorResource(
+                R.color.onPrimaryTransparent
+            ),
+            contentColor = colorResource(R.color.white)
+        ),
+        shape = RoundedCornerShape(7.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .width(20.dp)
+                    .fillMaxHeight()
+                    .background(Color(hexToColorInt(guestColor) ?: 0))
+            )
+            Column(
+                modifier = Modifier.weight(3f),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = guestName,
+                    modifier = Modifier.padding(
+                        start = 15.dp,
+                        end = 15.dp,
+                        top = 5.dp,
+                    )
+                )
+                val textGrupo =
+                    if (guestPosition.isEmpty()) guestCompany else "$guestCompany - $guestPosition"
+                Text(
+                    text = textGrupo,
+                    modifier = Modifier.padding(
+                        start = 15.dp,
+                        end = 15.dp,
+                        bottom = 5.dp,
+                    ),
+                    color = colorResource(R.color.white_transparent)
+                )
+            }
+            if (guestPhoto.isNotEmpty()) {
+                AsyncImage(
+                    model = guestPhoto,
+                    contentDescription = "photo",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .size(90.dp)
+                        .padding(7.dp)
+                        .weight(1f)
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun CreateDialog(
-    guest: Invitados,
+    guestName: String,
     confirmAction: () -> Unit,
     denyAction: () -> Unit,
     dismissAction: () -> Unit
@@ -226,16 +331,16 @@ fun CreateDialog(
         onDismissRequest = { dismissAction() },
         confirmButton = {
             TextButton(onClick = { confirmAction() }) {
-                Text("SI", color = Color.White)
+                Text(AFIRMATIVE, color = Color.White)
             }
         },
         dismissButton = {
             TextButton(onClick = { denyAction() }) {
-                Text("NO", color = Color.White)
+                Text(NEGATIVE, color = Color.White)
             }
         },
         title = {
-            Text(text = "¿" + guest.nombre + stringResource(R.string.guest_dialog_title))
+            Text(text = "¿" + guestName + stringResource(R.string.guest_dialog_title))
         },
         text = {
             Text(text = stringResource(R.string.guest_dialog_text))
