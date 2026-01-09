@@ -45,8 +45,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun EventsScreen(
     eventsViewModel: EventsViewModel = koinViewModel(),
     goToEventDetail: (String) -> Unit,
-    goToEventGuests: (String) -> Unit,
-    goToRelevoGuests: (String) -> Unit,
+    goToEventGuests: (String, Boolean) -> Unit,
     goToCreateEvent: () -> Unit
 ) {
     val uiState by eventsViewModel.uiState.collectAsStateWithLifecycle()
@@ -135,10 +134,8 @@ fun EventsScreen(
                         place = evento.lugar ?: "",
                         photoUrl = evento.imagen ?: "",
                         onClick = {
-                            if (evento.esRelevoGuardia) {
-                                goToRelevoGuests(evento.id.toString())
-                            } else {
-                                goToEventGuests(evento.id.toString())
+                            evento.id?.let {
+                                goToEventGuests(evento.id.toString(), evento.esRelevoGuardia)
                             }
                         },
                         onLongClick = {

@@ -1,5 +1,6 @@
 package com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.events
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.data.network.response.events.toDomain
@@ -18,6 +19,7 @@ import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eve
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetEventFirestoreUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetGuestFirestoreUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetRelevoGuestFirestoreUseCase
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.ERROR_GETTING_GUESTS
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -120,54 +122,82 @@ class EventsViewModel(
         }
     }
 
-    fun setGuestFirestore(event: String, invitado: Invitados) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                setGuestFirestoreUseCase(event, invitado)
-            } catch (_: Exception) {
-
+    fun setGuestAccess(
+        access: Boolean,
+        isRelevo: Boolean,
+        event: String
+    ) {
+        if (isRelevo) {
+            _uiState.update {
+                it.copy(
+                    invitadoRelevoSelected = it.invitadoRelevoSelected.copy(
+                        accedido = access
+                    )
+                )
+            }
+        } else {
+            _uiState.update {
+                it.copy(
+                    invitadoSelected = it.invitadoSelected.copy(
+                        accedido = access
+                    )
+                )
             }
         }
+        setGuestFirestore(
+            event = event,
+            esRelevoGuardia = isRelevo,
+            invitadoRelevo = _uiState.value.invitadoRelevoSelected,
+            invitado = _uiState.value.invitadoSelected
+        )
     }
 
-    fun setRelevoGuestFirestore(event: String, invitado: InvitadosRelevo) {
+    fun setGuestFirestore(
+        event: String,
+        esRelevoGuardia: Boolean,
+        invitado: Invitados? = null,
+        invitadoRelevo: InvitadosRelevo? = null
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                setRelevoGuestFirestoreUseCase(event, invitado)
-            } catch (_: Exception) {
-
-            }
-        }
-    }
-
-    fun getEventGuests(event: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                getEventGuestsFirestoreUseCase(event).collect { invitados ->
-                    _uiState.update {
-                        it.copy(
-                            invitados = invitados
-                        )
+                if (esRelevoGuardia) {
+                    invitadoRelevo?.let {
+                        setRelevoGuestFirestoreUseCase(event, it)
                     }
-//                    addRegalosToDB(*invitados.toTypedArray())
+                } else {
+                    invitado?.let {
+                        setGuestFirestoreUseCase(event, it)
+                    }
                 }
             } catch (_: Exception) {
-//                getRegalosFromDB()
+
             }
         }
     }
 
-    fun getRelevoGuests(event: String) {
+    fun getEventGuests(event: String, esRelevoGuardia: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                getRelevoGuestsFirestoreUseCase(event).collect { invitados ->
-                    _uiState.update {
-                        it.copy(
-                            invitadosRelevo = invitados
-                        )
+                if (!esRelevoGuardia) {
+                    getEventGuestsFirestoreUseCase(event).collect { invitados ->
+                        _uiState.update {
+                            it.copy(
+                                invitados = invitados
+                            )
+                        }
+                    }
+                } else {
+                    getRelevoGuestsFirestoreUseCase(event).collect { invitados ->
+                        _uiState.update {
+                            it.copy(
+                                invitadosRelevo = invitados
+                            )
+                        }
                     }
                 }
-            } catch (_: Exception) {
+
+            } catch (e: Exception) {
+                Log.e("GetEventGuests", ERROR_GETTING_GUESTS, e)
             }
         }
     }
@@ -182,13 +212,39 @@ class EventsViewModel(
         }
     }
 
-    fun searchPhoto(event: String, invitado: Invitados) {
-        val upperName = invitado.nombre.uppercase()
+    fun searchPhoto(
+        event: String,
+        invitado: Invitados = Invitados(),
+        invitadoRelevo: InvitadosRelevo = InvitadosRelevo(),
+        isRelevo: Boolean
+    ) {
+        val selectGuest = if (isRelevo) invitadoRelevo.nombre else invitado.nombre
+        val upperName = selectGuest.uppercase()
         val normalized = Normalizer.normalize(upperName, Normalizer.Form.NFD)
         val photoName = normalized.replace("\\p{Mn}+".toRegex(), "")
         _uiState.value.guestsPhotos.forEach {
             if (photoName == it.first) {
-                setGuestFirestore(event, invitado.copy(foto = it.second))
+                setGuestFirestore(
+                    event = event,
+                    esRelevoGuardia = isRelevo,
+                    invitado = invitado.copy(foto = it.second),
+                    invitadoRelevo = invitadoRelevo.copy(foto = it.second)
+                )
+            }
+        }
+    }
+
+    fun selectGuest(
+        invitado: Invitados = Invitados(),
+        invitadoRelevo: InvitadosRelevo = InvitadosRelevo(),
+        isRelevo: Boolean,
+        isShortClick: Boolean = false
+    ) {
+        _uiState.update {
+            if (isRelevo) {
+                it.copy(invitadoRelevoSelected = invitadoRelevo, isDialogShown = isShortClick)
+            } else {
+                it.copy(invitadoSelected = invitado, isDialogShown = isShortClick)
             }
         }
     }
@@ -206,7 +262,9 @@ data class EventsUiState(
     val events: List<Evento> = emptyList(),
     val event: Evento? = null,
     val invitados: List<Invitados> = emptyList(),
+    val invitadoSelected: Invitados = Invitados(),
     val invitadosRelevo: List<InvitadosRelevo> = emptyList(),
+    val invitadoRelevoSelected: InvitadosRelevo = InvitadosRelevo(),
     val guestsPhotos: List<Pair<String, String>> = emptyList(),
     val dialogType: DialogType? = null,
     val isDialogShown: Boolean = false,
