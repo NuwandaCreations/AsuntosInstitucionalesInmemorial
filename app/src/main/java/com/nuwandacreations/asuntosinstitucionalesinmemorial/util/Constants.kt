@@ -14,8 +14,10 @@ class Constants {
         const val GUESTS_JSON = "1-eventos/"
         const val EVENTS_PHOTOS_JPG = "1-eventos/imagenes/"
         const val GUESTS_PHOTOS_JPG = "1-eventos/imagenes/invitados/"
+        const val GUESTS_TICKETS = "1-eventos/entradas/"
         const val DETAIL_EVENT_GUEST_BTN = "Subir invitados desde JSON"
         const val DETAIL_EVENT_DELETE_BTN = "Eliminar evento"
+        const val DETAIL_EVENT_GENERATE_QR_BTN = "Generar invitaciones del evento"
         const val EVENT_ID = "Id del evento"
         const val EVENT_NAME = "Nombre del evento"
         const val EVENT_DATE = "Fecha del evento"
@@ -37,6 +39,7 @@ class Constants {
         const val PERMISSION_DENY = "Permiso denegado"
         const val PERMISSION_FROM_SETTINGS = "Has denegado el permiso de cámara. Para usar el escáner QR, debes habilitarlo en la configuración de la app."
         const val OPEN_SETTINGS = "Abrir configuración"
+        const val TICKET_TEXT = "INVITACIÓN INDIVIDUAL"
 
         //ERROR
         const val ERROR_UPDATING_EVENT = "Error actualizando evento"
@@ -46,5 +49,8 @@ class Constants {
         const val ERROR_STARTING_CAMERA = "Error al iniciar cámara"
         const val ERROR_VALIDATING_GUEST = "Invitación no localizada en la base de datos"
         const val ERROR_SCANNING_QR = "Error al escanear"
+        const val ERROR_GENERATING_QR = "Error al generar lo códigos QR"
+        const val ERROR_GENERATING_PDF = "Error al convertir a PDF"
+
     }
 }

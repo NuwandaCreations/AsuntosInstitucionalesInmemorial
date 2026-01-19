@@ -1,6 +1,11 @@
 package com.nuwandacreations.asuntosinstitucionalesinmemorial.data
 
 import android.util.Log
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.snapshots
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ListResult
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.data.network.response.events.EventsResponse
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.FirebaseRepository
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.model.Invitados
@@ -8,20 +13,15 @@ import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.model.Invita
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.model.Material
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.model.Regalos
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.EVENTOS
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.EVENTS_PHOTOS_JPG
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.GUESTS
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.GUESTS_JSON
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.GUESTS_PHOTOS_JPG
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.GUESTS_TICKETS
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.MATERIAL
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.MATERIAL_JSON
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.REGALOS
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.REGALOS_JSON
-import com.google.android.gms.tasks.Tasks
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.snapshots
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ListResult
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.EVENTS_PHOTOS_JPG
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.GUESTS_PHOTOS_JPG
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
@@ -89,14 +89,19 @@ class FirebaseRepositoryImpl(
         firestore.collection(EVENTOS).document(event.id ?: "").set(event)
     }
 
-    override suspend fun setGuestsFirestore(evento: String, invitado: Invitados) {
-        firestore.collection(EVENTOS).document(evento).collection(GUESTS).document(invitado.nombre)
+    override suspend fun setGuestsFirestore(event: String, invitado: Invitados) {
+        firestore.collection(EVENTOS).document(event).collection(GUESTS).document(invitado.nombre)
             .set(invitado)
     }
 
-    override suspend fun setRelevoGuestsFirestore(evento: String, invitado: InvitadosRelevo) {
-        firestore.collection(EVENTOS).document(evento).collection(GUESTS).document(invitado.nombre)
+    override suspend fun setRelevoGuestsFirestore(event: String, invitado: InvitadosRelevo) {
+        firestore.collection(EVENTOS).document(event).collection(GUESTS).document(invitado.nombre)
             .set(invitado)
+    }
+
+    override suspend fun setEventTicketsStorage(event: String, ticket: Pair<ByteArray, String>) {
+        val pdfRef = firebaseStorage.reference.child("$GUESTS_TICKETS$event/${ticket.second}")
+        pdfRef.putBytes(ticket.first)
     }
 
     override fun getRegalosFirestore(): Flow<List<Regalos>> {

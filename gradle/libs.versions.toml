@@ -23,6 +23,7 @@ coil = "2.6.0"
 barcodeScanning = "17.3.0"
 accompanistPermissions = "0.34.0"
 mockkVersion = "1.14.7"
+zxingCore = "3.5.1"
 
 [libraries]
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraView" }
@@ -63,6 +64,7 @@ room-ktx = { module = "androidx.room:room-ktx", version.ref = "room-version" }
 barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanning" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 mockk-unit = { group = "io.mockk", name = "mockk", version.ref = "mockkVersion" }
+zxing-core = { module = "com.google.zxing:core", version.ref = "zxingCore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

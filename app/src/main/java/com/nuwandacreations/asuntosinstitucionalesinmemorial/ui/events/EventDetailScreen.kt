@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +28,7 @@ import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyProgressIndicator
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.theme.Typography
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.DETAIL_EVENT_DELETE_BTN
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.DETAIL_EVENT_GENERATE_QR_BTN
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.DETAIL_EVENT_GUEST_BTN
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -38,6 +40,7 @@ fun EventDetailScreen(
 ) {
     val uiState by eventsViewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = Unit) {
         eventsViewModel.getEventByIdFirestore(event)
@@ -69,6 +72,22 @@ fun EventDetailScreen(
                             eventsViewModel.getEventGuestsStorage(
                                 uiState.event?.id ?: "",
                                 uiState.event?.esRelevoGuardia ?: false
+                            )
+                            eventsViewModel.showDialog(false)
+                        },
+                        dismissAction = {
+                            eventsViewModel.showDialog(false)
+                        }
+                    )
+                }
+
+                DialogType.GENERATE_QR -> {
+                    GenerateInvitations(
+                        confirmAction = {
+                            eventsViewModel.generateGuestsQR(
+                                event = uiState.event?.nombre ?: "",
+                                esRelevoGuardia = uiState.event?.esRelevoGuardia ?: false,
+                                context = context
                             )
                             eventsViewModel.showDialog(false)
                         },
@@ -138,6 +157,12 @@ fun EventDetailScreen(
                         showDialog(true)
                     }
                 }
+                MyButton(text = DETAIL_EVENT_GENERATE_QR_BTN) {
+                    eventsViewModel.apply {
+                        updateDialogType(DialogType.GENERATE_QR)
+                        showDialog(true)
+                    }
+                }
             }
         }
         if (uiState.isLoading) {
@@ -165,6 +190,20 @@ fun DeleteEventFromFirebase(confirmAction: () -> Unit, dismissAction: () -> Unit
     BasicDialog(
         title = stringResource(R.string.event_detail_dialog_title),
         text = stringResource(R.string.event_delete_dialog_text),
+        confirmButton = {
+            confirmAction()
+        },
+        dismissButton = {
+            dismissAction()
+        }
+    )
+}
+
+@Composable
+fun GenerateInvitations(confirmAction: () -> Unit, dismissAction: () -> Unit) {
+    BasicDialog(
+        title = stringResource(R.string.event_detail_qr_title),
+        text = stringResource(R.string.event_generate_qr_dialog_text),
         confirmButton = {
             confirmAction()
         },

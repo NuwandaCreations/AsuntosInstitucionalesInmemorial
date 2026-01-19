@@ -17,8 +17,8 @@ android {
         applicationId = "com.nuwandacreations.asuntosinstitucionalesinmemorial"
         minSdk = 25
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -89,6 +89,8 @@ dependencies {
     implementation(libs.accompanist.permissions)
     //Testing
     implementation(libs.mockk.unit)
+    //Zxing
+    implementation(libs.zxing.core)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -39,12 +39,13 @@
     <string name="eventos_dialog_title">Eliminar y actualizar eventos</string>
     <string name="guest_dialog_title">" ya ha llegado?"</string>
     <string name="event_detail_dialog_title">¡ATENCIÓN!</string>
+    <string name="event_detail_qr_title">ACTUALIZAR ENTRADAS</string>
     <string name="regalos_dialog_text">¿Está seguro que quiere eliminar el listado de regalos actual y subir el nuevo listado desde el JSON de Firebase Storage?</string>
     <string name="material_dialog_text">¿Está seguro que quiere eliminar el listado de material actual y subir el nuevo listado desde el JSON de Firebase Storage?</string>
     <string name="eventos_dialog_text">¿Está seguro que quiere eliminar el listado de eventos actual y subir el nuevo listado desde el JSON de Firebase Storage?</string>
     <string name="guest_dialog_text">Marque SI cuando el invitado haya accedido</string>
     <string name="event_detail_dialog_text">¿Seguro que desea sobreescribir la lista de invitados desde JSON?</string>
     <string name="event_delete_dialog_text">¿Seguro que desea eliminar el evento?</string>
-
+    <string name="event_generate_qr_dialog_text">¿Quiere generar las invitaciones del evento a partir de los invitados actuales?</string>
 
 </resources>
