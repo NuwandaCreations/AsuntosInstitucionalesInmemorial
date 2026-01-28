@@ -55,6 +55,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
@@ -70,6 +71,7 @@ import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Comp
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.PERMISSION_FROM_SETTINGS
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.PERMISSION_NECESARY
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.QR_SCANNER_TITTLE
+import java.nio.charset.Charset
 import java.util.concurrent.Executors
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
@@ -237,7 +239,11 @@ private class QRCodeAnalyzer(
     private val onQRCodeDetected: (String) -> Unit
 ) : ImageAnalysis.Analyzer {
 
-    private val scanner = BarcodeScanning.getClient()
+    private val scanner = BarcodeScanning.getClient(
+        BarcodeScannerOptions.Builder()
+            .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
+            .build()
+    )
 
     @androidx.camera.core.ExperimentalGetImage
     override fun analyze(imageProxy: ImageProxy) {
@@ -252,7 +258,20 @@ private class QRCodeAnalyzer(
                 .addOnSuccessListener { barcodes ->
                     for (barcode in barcodes) {
                         if (barcode.format == Barcode.FORMAT_QR_CODE) {
-                            barcode.rawValue?.let { qrCode ->
+                            val qrCode = when {
+                                barcode.rawBytes != null -> {
+                                    try {
+                                        String(barcode.rawBytes!!, Charset.forName("UTF-8"))
+                                    } catch (e: Exception) {
+                                        Log.e("QRCodeAnalyzer", "Error decodificando UTF-8", e)
+                                        barcode.rawValue ?: ""
+                                    }
+                                }
+
+                                else -> barcode.rawValue ?: ""
+                            }
+
+                            if (qrCode.isNotEmpty()) {
                                 onQRCodeDetected(qrCode)
                             }
                         }
