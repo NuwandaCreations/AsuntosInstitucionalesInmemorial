@@ -1,6 +1,5 @@
 package com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,10 +14,12 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,6 +45,22 @@ fun MyTextField(
     onSearchText: (String) -> Unit,
     onCategoriaMenu: (String) -> Unit
 ) {
+    val allCat = stringResource(R.string.all)
+
+    val categorias = remember(regalos, material, invitados, invitadosRelevo) {
+        if (regalos.isNotEmpty()) {
+            regalos.map { it.categoria.toString() }
+        } else if (material.isNotEmpty()) {
+            material.map { it.categoria.toString() }
+        } else if (invitados.isNotEmpty()) {
+            invitados.map { it.grupo }
+        } else if (invitadosRelevo.isNotEmpty()) {
+            invitadosRelevo.map { it.observaciones }
+        } else {
+            emptyList()
+        }.filter { it.isNotBlank() }.distinct().sorted()
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
@@ -51,28 +68,25 @@ fun MyTextField(
         OutlinedTextField(
             value = searchText,
             leadingIcon = {
-                Image(
+                Icon(
                     Icons.Default.Menu,
                     contentDescription = "Menu",
                     modifier = Modifier
                         .size(20.dp)
-                        .clickable {
-                            onExpandedMenu(true)
-                        }
+                        .clickable { onExpandedMenu(true) }
                 )
             },
             trailingIcon = {
-                Image(
+                Icon(
                     Icons.Default.Search,
                     contentDescription = "Search",
-                    modifier = Modifier
-                        .size(20.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             },
             modifier = Modifier
                 .padding(top = 10.dp, start = 15.dp, end = 15.dp)
                 .fillMaxWidth(),
-            onValueChange = { onSearchText(it) },
+            onValueChange = onSearchText,
             maxLines = 1,
             shape = RoundedCornerShape(40.dp),
             placeholder = { Text(placeholderText) },
@@ -93,27 +107,14 @@ fun MyTextField(
                 .padding(start = 10.dp)
         ) {
             DropdownMenu(expanded = expandedMenu, onDismissRequest = { onExpandedMenu(false) }) {
-                val allCat = stringResource(R.string.all)
                 DropdownMenuItem(text = { Text(allCat) }, onClick = {
                     onCategoriaMenu(allCat)
                     onExpandedMenu(false)
                 })
 
-                val categorias = if (regalos.isNotEmpty()) {
-                    regalos.map { it.categoria }.distinct()
-                } else if (material.isNotEmpty()) {
-                    material.map { it.categoria }.distinct()
-                } else if (invitados.isNotEmpty()) {
-                    invitados.map { it.grupo }.distinct()
-                } else if (invitadosRelevo.isNotEmpty()) {
-                    invitadosRelevo.map { it.observaciones }.distinct()
-                } else {
-                    null
-                }
-                categorias?.forEach { categoria ->
-                    val selectedCat = categoria.toString()
-                    DropdownMenuItem(text = { Text(selectedCat) }, onClick = {
-                        onCategoriaMenu(selectedCat)
+                categorias.forEach { categoria ->
+                    DropdownMenuItem(text = { Text(categoria) }, onClick = {
+                        onCategoriaMenu(categoria)
                         onExpandedMenu(false)
                     })
                 }

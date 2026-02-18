@@ -105,7 +105,8 @@ fun NavigationWrapper() {
                                 esRelevo = false
                             )
                         )
-                    }
+                    },
+                    isRelevoGuardia = event.esRelevo
                 )
             }
             composable<QrScanner> { navBackStackEntry ->

@@ -168,6 +168,16 @@ fun EventGuestsScreen(
                             if (searchText.isEmpty() || relevoGuest.nombre
                                     .contains(searchText, ignoreCase = true)
                             ) {
+                                val visitText =
+                                    if (relevoGuest.visita1.isNotEmpty()) stringResource(R.string.first_visit)
+                                    else if (relevoGuest.visita2.isEmpty()) stringResource(R.string.first_visit)
+                                    else stringResource(R.string.no_visit)
+
+                                val relevoText =
+                                    if (relevoGuest.patio.isNotEmpty()) stringResource(R.string.yard_relevo)
+                                    else if (relevoGuest.jardines.isNotEmpty()) stringResource(R.string.garden_relevo)
+                                    else stringResource(R.string.no_relevo)
+
                                 GuestElevatedCard(
                                     onClick = {
                                         eventsViewModel.selectGuest(
@@ -184,8 +194,8 @@ fun EventGuestsScreen(
                                         goToGuestDetail(relevoGuest.nombre)
                                     },
                                     guestName = relevoGuest.nombre,
-                                    guestPosition = relevoGuest.empleo,
-                                    guestCompany = relevoGuest.observaciones,
+                                    guestPosition = "$visitText - $relevoText",
+                                    guestCompany = relevoGuest.empleo,
                                     guestAccessed = relevoGuest.accedido,
                                     guestColor = relevoGuest.color,
                                     guestPhoto = relevoGuest.foto
@@ -293,8 +303,9 @@ fun GuestElevatedCard(
                         top = 5.dp,
                     )
                 )
-                val textGrupo =
-                    if (guestPosition.isEmpty()) guestCompany else "$guestCompany - $guestPosition"
+
+                val textGrupo = listOf(guestCompany, guestPosition).filter { it.isNotEmpty() }
+                    .joinToString(" - ")
                 Text(
                     text = textGrupo,
                     modifier = Modifier.padding(
