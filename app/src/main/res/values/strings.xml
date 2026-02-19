@@ -30,6 +30,8 @@
     <string name="no_relevo">Sin relevo</string>
     <string name="agape_access">Con entrada vino</string>
     <string name="agape_deny">Sin entrada vino</string>
+    <string name="guest_accessed">El invitado ha accedido</string>
+    <string name="guest_not_accessed">El invitado no ha llegado</string>
 
     <string name="regalos_button">Actualizar Regalos desde JSON Firebase</string>
     <string name="material_button">Actualizar Material desde JSON Firebase</string>

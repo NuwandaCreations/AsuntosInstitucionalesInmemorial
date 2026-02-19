@@ -15,6 +15,7 @@ class Constants {
         const val EVENTS_PHOTOS_JPG = "1-eventos/imagenes/"
         const val GUESTS_PHOTOS_JPG = "1-eventos/imagenes/invitados/"
         const val GUESTS_TICKETS = "1-eventos/entradas/"
+        const val GUESTS_BASE_TICKETS = "1-eventos/entradas/tickets-base/"
         const val DETAIL_EVENT_GUEST_BTN = "Subir invitados desde JSON"
         const val DETAIL_EVENT_DELETE_BTN = "Eliminar evento"
         const val DETAIL_EVENT_GENERATE_QR_BTN = "Generar invitaciones del evento"
