@@ -102,7 +102,7 @@ fun NavigationWrapper() {
                             GuestDetail(
                                 event = event.event,
                                 guest = it,
-                                esRelevo = false
+                                esRelevo = event.esRelevo
                             )
                         )
                     },
@@ -129,7 +129,7 @@ fun NavigationWrapper() {
                 GuestDetailScreen(
                     event = detail.event,
                     guest = detail.guest,
-                    esRelevo = detail.esRelevo,
+                    isRelevo = detail.esRelevo,
                     navigateBack = { navController.popBackStack() }
                 )
             }

@@ -2,19 +2,19 @@ package com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.events
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.pdf.PdfDocument
 import android.util.Log
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.createBitmap
-import androidx.core.graphics.scale
 import androidx.core.graphics.set
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.ImageLoader
+import coil.request.ImageRequest
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
@@ -36,10 +36,11 @@ import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eve
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetEventFirestoreUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetGuestFirestoreUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetRelevoGuestFirestoreUseCase
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.regalosusecases.firebasestorage.GetPhotosStorageUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.ERROR_GENERATING_PDF
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.ERROR_GENERATING_QR
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.ERROR_GETTING_GUESTS
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.TICKET_TEXT
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.GUESTS_BASE_TICKETS
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,6 +64,7 @@ class EventsViewModel(
     val setEventTicketStorageUseCase: SetEventTicketStorageUseCase,
     val getGuestsPhotosStorageUseCase: GetGuestsPhotosStorageUseCase,
     val getEventPhotoByIdStorageUseCase: GetEventPhotoByIdStorageUseCase,
+    val getPhotosStorageUseCase: GetPhotosStorageUseCase,
     val deleteEventFirestoreUseCase: DeleteEventFirestoreUseCase
 ) : ViewModel() {
     val _uiState = MutableStateFlow(EventsUiState())
@@ -278,14 +280,16 @@ class EventsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { it.copy(isLoading = true) }
             try {
+                val url = getPhotosStorageUseCase("$GUESTS_BASE_TICKETS$event")
+                val emptyBaseTicket = generateEmptyInvitationBitmap(context = context, url = url)
+
                 val guestsNames =
                     if (esRelevoGuardia) _uiState.value.invitadosRelevo.map { it.nombre }
                     else _uiState.value.invitados.map { it.nombre }
-                val emptyTicketBitmap =
-                    generateEmptyInvitationBitmap(eventName = event, context = context)
+
                 guestsNames.forEachIndexed { index, guestName ->
                     val guestBitmap = generateQRCode(guestName)
-                    val guestTicketBitmap = emptyTicketBitmap.copy(emptyTicketBitmap.config!!, true)
+                    val guestTicketBitmap = emptyBaseTicket.copy(emptyBaseTicket.config!!, true)
 
                     guestBitmap?.let { bitmap ->
                         val ticketBitmap = generateInvitationBitmap(
@@ -310,7 +314,7 @@ class EventsViewModel(
                         }
                     }
                 }
-                emptyTicketBitmap.recycle()
+                emptyBaseTicket.recycle()
                 _uiState.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
                 Log.e("GenerateGuestsQR", ERROR_GENERATING_QR, e)
@@ -319,10 +323,38 @@ class EventsViewModel(
         }
     }
 
+    suspend fun generateEmptyInvitationBitmap(
+        context: Context,
+        url: String
+    ): Bitmap {
+        val loader = ImageLoader(context)
+        val request = ImageRequest.Builder(context)
+            .data(url)
+            .allowHardware(false)
+            .size(540, 680)
+            .build()
+
+        val result = loader.execute(request)
+        val drawable = result.drawable
+
+        val bitmap = when (drawable) {
+            is BitmapDrawable -> drawable.bitmap
+            else -> {
+                val bitmap = createBitmap(540, 680)
+                val canvas = Canvas(bitmap)
+                drawable?.setBounds(0, 0, 540, 680)
+                drawable?.draw(canvas)
+                bitmap
+            }
+        }
+
+        return bitmap
+    }
+
     fun generateQRCode(text: String): Bitmap? {
         return try {
             val writer = QRCodeWriter()
-            val qrSize = 250
+            val qrSize = 230
             val hints = hashMapOf<EncodeHintType, Any>(
                 EncodeHintType.CHARACTER_SET to "UTF-8",
                 EncodeHintType.MARGIN to 1
@@ -341,56 +373,6 @@ class EventsViewModel(
         }
     }
 
-    fun generateEmptyInvitationBitmap(
-        context: Context,
-        eventName: String
-    ): Bitmap {
-        val width = 540
-        val height = 680
-
-        val bitmap = createBitmap(width, height)
-        val canvas = Canvas(bitmap)
-
-        val backgroundPaint = Paint().apply {
-            color = context.getColor(R.color.black)
-        }
-        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), backgroundPaint)
-
-        val backgroundImageBitmap = BitmapFactory.decodeResource(
-            context.resources,
-            R.drawable.ic_rinf1
-        )
-        val scaledWidth = 500
-        val scaledHeight = 500
-        val scaledBackground = backgroundImageBitmap.scale(scaledWidth, scaledHeight)
-        canvas.drawBitmap(scaledBackground, (width - scaledWidth) / 2f, 145f, null)
-
-
-        val eventNamePaint = Paint().apply {
-            color = context.getColor(R.color.white)
-            textSize = 70f
-            typeface = ResourcesCompat.getFont(context, R.font.italianno_regular)
-            textAlign = Paint.Align.CENTER
-        }
-
-        val detailsLines = eventName.split("\n")
-        var yPosition = 80f
-        for (line in detailsLines) {
-            canvas.drawText(line, width / 2f, yPosition, eventNamePaint)
-            yPosition += 90f
-        }
-
-        val ticketTextPaint = Paint().apply {
-            color = context.getColor(R.color.white)
-            textSize = 15f
-            typeface = ResourcesCompat.getFont(context, R.font.inknut_antiqua_semibold)
-            textAlign = Paint.Align.CENTER
-        }
-        canvas.drawText(TICKET_TEXT, width / 2f, 130f, ticketTextPaint)
-
-        return bitmap
-    }
-
     fun generateInvitationBitmap(
         context: Context,
         guestName: String,
@@ -403,17 +385,17 @@ class EventsViewModel(
         val bitmap = baseBitmap
         val canvas = Canvas(bitmap)
 
-        val qrLeft = (width - 250) / 2f
-        val qrTop = height - 400f
+        val qrLeft = (width - 230) / 2f
+        val qrTop = height - 340f
         canvas.drawBitmap(qrBitmap, qrLeft, qrTop, null)
 
         val guestNamePaint = Paint().apply {
             color = context.getColor(R.color.white)
-            textSize = 25f
+            textSize = 15f
             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
             textAlign = Paint.Align.CENTER
         }
-        canvas.drawText(guestName, width / 2f, height - 70f, guestNamePaint)
+        canvas.drawText(guestName, width / 2f, height - 90f, guestNamePaint)
 
         return bitmap
     }
