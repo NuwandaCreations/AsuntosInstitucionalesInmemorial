@@ -27,13 +27,16 @@ class GuestDetailViewModel(
     val _uiState = MutableStateFlow(GuestDetailUiState())
     val uiState: StateFlow<GuestDetailUiState> = _uiState
 
-    fun getGuestFirestore(evento: String, invitado: String, esRelevo: Boolean) {
+    fun getGuestFirestore(event: String, guest: String, isRelevo: Boolean, hasQrScanned: Boolean) {
         try {
-            if (esRelevo) {
+            if (isRelevo) {
                 viewModelScope.launch(Dispatchers.IO) {
-                    getGuestRelevoByIdFirestoreUseCase(evento, invitado).collect { invitadoRelevo ->
+                    getGuestRelevoByIdFirestoreUseCase(event, guest).collect { invitadoRelevo ->
                         if (invitadoRelevo.nombre.isNotEmpty()) {
                             _uiState.update { it.copy(invitadoRelevo = invitadoRelevo) }
+                            if (hasQrScanned) {
+                                setGuestAccess(event, access = true, isRelevo = true)
+                            }
                         } else {
                             _uiState.update { it.copy(emptyQrScan = true) }
                         }
@@ -41,9 +44,12 @@ class GuestDetailViewModel(
                 }
             } else {
                 viewModelScope.launch(Dispatchers.IO) {
-                    getGuestByIdFirestoreUseCase(evento, invitado).collect { invitado ->
+                    getGuestByIdFirestoreUseCase(event, guest).collect { invitado ->
                         if (invitado.nombre.isNotEmpty()) {
                             _uiState.update { it.copy(invitado = invitado) }
+                            if (hasQrScanned) {
+                                setGuestAccess(event, access = true, isRelevo = false)
+                            }
                         } else {
                             _uiState.update { it.copy(emptyQrScan = true) }
                         }

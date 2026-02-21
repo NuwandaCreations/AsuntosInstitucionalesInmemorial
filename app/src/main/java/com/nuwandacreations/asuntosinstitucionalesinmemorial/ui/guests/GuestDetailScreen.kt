@@ -63,7 +63,12 @@ fun GuestDetailScreen(
     val scrollState = rememberScrollState()
 
     LaunchedEffect(Unit) {
-        guestDetailViewModel.getGuestFirestore(event, guest, isRelevo)
+        guestDetailViewModel.getGuestFirestore(
+            event = event,
+            guest = guest,
+            isRelevo = isRelevo,
+            hasQrScanned = hasQrScanned
+        )
     }
 
     if (!uiState.emptyQrScan) {
@@ -77,15 +82,15 @@ fun GuestDetailScreen(
                     .padding(padding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                LaunchedEffect(Unit) {
-                    if (hasQrScanned) {
-                        guestDetailViewModel.setGuestAccess(
-                            event = event,
-                            access = true,
-                            isRelevo = isRelevo
-                        )
-                    }
-                }
+//                LaunchedEffect(Unit) {
+//                    if (hasQrScanned) {
+//                        guestDetailViewModel.setGuestAccess(
+//                            event = event,
+//                            access = true,
+//                            isRelevo = isRelevo
+//                        )
+//                    }
+//                }
 
                 if (uiState.isDialogShown) {
                     CreateDialog(
