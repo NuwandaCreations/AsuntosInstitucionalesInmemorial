@@ -81,6 +81,7 @@ val viewModelModule = module {
         GuestDetailViewModel(
             get(),
             get(),
+            get(),
             get()
         )
     }
