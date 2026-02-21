@@ -93,7 +93,7 @@ fun NavigationWrapper() {
                         navController.navigate(
                             QrScanner(
                                 event = event.event,
-                                esRelevo = false
+                                esRelevo = event.esRelevo
                             )
                         )
                     },
@@ -102,7 +102,8 @@ fun NavigationWrapper() {
                             GuestDetail(
                                 event = event.event,
                                 guest = it,
-                                esRelevo = event.esRelevo
+                                isRelevo = event.esRelevo,
+                                hasQrScanned = false
                             )
                         )
                     },
@@ -118,7 +119,8 @@ fun NavigationWrapper() {
                             GuestDetail(
                                 event = event.event,
                                 guest = it,
-                                esRelevo = event.esRelevo
+                                isRelevo = event.esRelevo,
+                                hasQrScanned = true
                             )
                         )
                     }
@@ -129,7 +131,8 @@ fun NavigationWrapper() {
                 GuestDetailScreen(
                     event = detail.event,
                     guest = detail.guest,
-                    isRelevo = detail.esRelevo,
+                    isRelevo = detail.isRelevo,
+                    hasQrScanned = detail.hasQrScanned,
                     navigateBack = { navController.popBackStack() }
                 )
             }

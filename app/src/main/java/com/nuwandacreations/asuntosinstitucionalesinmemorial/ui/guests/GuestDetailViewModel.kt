@@ -8,7 +8,10 @@ import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.model.Invita
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetGuestByIdFirestoreUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.GetGuestRelevoByIdFirestoreUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetGuestFirestoreUseCase
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetRelevoGuestFirestoreUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.ERROR_LOADING_GUEST
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.ERROR_SETTING_ACCESS
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.ERROR_SETTING_GUEST
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +21,8 @@ import kotlinx.coroutines.launch
 class GuestDetailViewModel(
     val getGuestByIdFirestoreUseCase: GetGuestByIdFirestoreUseCase,
     val getGuestRelevoByIdFirestoreUseCase: GetGuestRelevoByIdFirestoreUseCase,
-    val setGuestFirestoreUseCase: SetGuestFirestoreUseCase
+    val setGuestFirestoreUseCase: SetGuestFirestoreUseCase,
+    val setRelevoGuestFirestoreUseCase: SetRelevoGuestFirestoreUseCase
 ) : ViewModel() {
     val _uiState = MutableStateFlow(GuestDetailUiState())
     val uiState: StateFlow<GuestDetailUiState> = _uiState
@@ -51,12 +55,41 @@ class GuestDetailViewModel(
         }
     }
 
-    fun setGuestFirestore(event: String, invitado: Invitados) {
+    fun setGuestFirestore(
+        event: String,
+        guest: Invitados,
+        relevoGuest: InvitadosRelevo,
+        isRelevo: Boolean
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                setGuestFirestoreUseCase(event, invitado)
-            } catch (_: Exception) {
+                if (isRelevo) {
+                    setRelevoGuestFirestoreUseCase(event, relevoGuest)
+                } else {
+                    setGuestFirestoreUseCase(event, guest)
+                }
+            } catch (e: Exception) {
+                Log.e("SetGuestFirestore", ERROR_SETTING_GUEST, e)
+            }
+        }
+    }
 
+    fun setGuestAccess(event: String, access: Boolean?, isRelevo: Boolean) {
+        viewModelScope.launch(Dispatchers.Main) {
+            try {
+                if (isRelevo) {
+                    _uiState.update { it.copy(invitadoRelevo = it.invitadoRelevo.copy(accedido = access)) }
+                } else {
+                    _uiState.update { it.copy(invitado = it.invitado.copy(accedido = access)) }
+                }
+                setGuestFirestore(
+                    event,
+                    _uiState.value.invitado,
+                    _uiState.value.invitadoRelevo,
+                    isRelevo
+                )
+            } catch (e: Exception) {
+                Log.e("SetGuestAccess", ERROR_SETTING_ACCESS, e)
             }
         }
     }

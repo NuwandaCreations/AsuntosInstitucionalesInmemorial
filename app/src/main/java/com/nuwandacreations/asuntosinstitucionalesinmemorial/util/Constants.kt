@@ -46,6 +46,8 @@ class Constants {
         const val ERROR_UPDATING_EVENT = "Error actualizando evento"
         const val ERROR_GETTING_GUESTS = "Error al obtener los invitados del evento"
         const val ERROR_LOADING_GUEST = "Error al cargar invitado"
+        const val ERROR_SETTING_GUEST = "Error al actualizar invitado"
+        const val ERROR_SETTING_ACCESS = "Error al cambiar el acceso del invitado"
         const val ERROR_UNBINDING_CAMERA = "Error al liberar cámara"
         const val ERROR_STARTING_CAMERA = "Error al iniciar cámara"
         const val ERROR_VALIDATING_GUEST = "Invitación no localizada en la base de datos"

@@ -59,6 +59,6 @@ data class QrScanner(val event: String, val esRelevo: Boolean) : AppScreen {
 }
 
 @Serializable
-data class GuestDetail(val event: String, val guest: String, val esRelevo: Boolean) : AppScreen {
+data class GuestDetail(val event: String, val guest: String, val isRelevo: Boolean, val hasQrScanned: Boolean) : AppScreen {
     override val route = "GuestDetail"
 }

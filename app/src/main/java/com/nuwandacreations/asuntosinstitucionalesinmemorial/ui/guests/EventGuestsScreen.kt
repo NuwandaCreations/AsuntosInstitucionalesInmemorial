@@ -170,7 +170,7 @@ fun EventGuestsScreen(
                             ) {
                                 val visitText =
                                     if (relevoGuest.visita1.isNotEmpty()) stringResource(R.string.first_visit)
-                                    else if (relevoGuest.visita2.isEmpty()) stringResource(R.string.first_visit)
+                                    else if (relevoGuest.visita2.isNotEmpty()) stringResource(R.string.second_visit)
                                     else stringResource(R.string.no_visit)
 
                                 val relevoText =
@@ -254,7 +254,7 @@ fun GuestElevatedCard(
     guestName: String,
     guestPosition: String,
     guestCompany: String,
-    guestAccessed: Boolean,
+    guestAccessed: Boolean?,
     guestColor: String,
     guestPhoto: String
 ) {
@@ -272,9 +272,11 @@ fun GuestElevatedCard(
                 shape = RoundedCornerShape(7.dp) // Debe coincidir con el shape del card
             ),
         colors = CardDefaults.elevatedCardColors(
-            containerColor = if (guestAccessed) colorResource(R.color.onSuccessTransparent) else colorResource(
-                R.color.onPrimaryTransparent
-            ),
+            containerColor = when (guestAccessed) {
+                true -> colorResource(R.color.onSuccessTransparent)
+                false -> colorResource(R.color.onPrimaryTransparent)
+                null -> colorResource(R.color.white_transparent)
+            },
             contentColor = colorResource(R.color.white)
         ),
         shape = RoundedCornerShape(7.dp)

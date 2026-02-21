@@ -1,5 +1,6 @@
 package com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.guests
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,16 +15,20 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -51,12 +56,15 @@ fun GuestDetailScreen(
     event: String,
     guest: String,
     isRelevo: Boolean,
+    hasQrScanned: Boolean,
     navigateBack: () -> Unit
 ) {
     val uiState by guestDetailViewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
 
-    guestDetailViewModel.getGuestFirestore(event, guest, isRelevo)
+    LaunchedEffect(Unit) {
+        guestDetailViewModel.getGuestFirestore(event, guest, isRelevo)
+    }
 
     if (!uiState.emptyQrScan) {
         Scaffold(
@@ -69,17 +77,33 @@ fun GuestDetailScreen(
                     .padding(padding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                LaunchedEffect(Unit) {
+                    if (hasQrScanned) {
+                        guestDetailViewModel.setGuestAccess(
+                            event = event,
+                            access = true,
+                            isRelevo = isRelevo
+                        )
+                    }
+                }
+
                 if (uiState.isDialogShown) {
                     CreateDialog(
-                        guestName = uiState.invitado.nombre,
+                        guestName = if (isRelevo) uiState.invitadoRelevo.nombre else uiState.invitado.nombre,
                         confirmAction = {
-                            uiState.invitado.accedido = true
-                            guestDetailViewModel.setGuestFirestore(event, uiState.invitado)
+                            guestDetailViewModel.setGuestAccess(
+                                event = event,
+                                access = true,
+                                isRelevo = isRelevo
+                            )
                             guestDetailViewModel.showDialog(false)
                         },
                         denyAction = {
-                            uiState.invitado.accedido = false
-                            guestDetailViewModel.setGuestFirestore(event, uiState.invitado)
+                            guestDetailViewModel.setGuestAccess(
+                                event = event,
+                                access = false,
+                                isRelevo = isRelevo
+                            )
                             guestDetailViewModel.showDialog(false)
                         },
                         dismissAction = {
@@ -125,8 +149,31 @@ fun GuestDetailScreen(
                     )
                 }
 
-                MyButton(text = "Actualizar acceso invitado") {
+                MyButton(text = stringResource(R.string.guest_access_btn)) {
                     guestDetailViewModel.showDialog(true)
+                }
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    OutlinedButton(
+                        onClick = {
+                            guestDetailViewModel.setGuestAccess(
+                                event = event,
+                                access = null,
+                                isRelevo = isRelevo
+                            )
+                        },
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color(0xFFEA580C)
+                        ),
+                        border = BorderStroke(1.5.dp, Color(0xFFEA580C).copy(alpha = 0.4f)),
+                        modifier = Modifier
+                            .padding(horizontal = 50.dp, vertical = 10.dp)
+                            .align(Alignment.CenterEnd),
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(Icons.Default.Delete, contentDescription = null)
+                            Text(stringResource(R.string.guest_attend_btn))
+                        }
+                    }
                 }
             }
         }
@@ -183,7 +230,7 @@ private fun CreateGuestTexts(
     group: String = "",
     position: String = "",
     vehicle: String = "",
-    accesed: Boolean = false,
+    accesed: Boolean?,
     textModifier: Modifier
 ) {
     Text(
@@ -209,7 +256,7 @@ private fun CreateGuestTexts(
         )
     } else {
         Icon(
-            imageVector = Icons.Default.Person,
+            imageVector = Icons.Default.AccountCircle,
             contentDescription = "Material",
             modifier = Modifier
                 .size(200.dp)
@@ -289,10 +336,17 @@ private fun CreateGuestTexts(
     }
 
     Text(
-        text = if (accesed) stringResource(R.string.guest_accessed) else stringResource(R.string.guest_not_accessed),
+        text = when (accesed) {
+            true -> stringResource(R.string.guest_accessed)
+            false -> stringResource(R.string.guest_not_accessed)
+            null -> stringResource(R.string.guest_not_attend)
+        },
         modifier = textModifier,
         style = Typography.titleMedium,
         textAlign = TextAlign.Center,
-        color = if (accesed) Color.Green else Color.Red
+        color = when (accesed) {
+            true -> colorResource(R.color.onSuccess)
+            else -> colorResource(R.color.onError)
+        }
     )
 }

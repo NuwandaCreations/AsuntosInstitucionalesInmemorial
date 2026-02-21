@@ -21,6 +21,10 @@
     <string name="regalos_screen_title">Inventario regalos protocolo</string>
     <string name="material_screen_title">Inventario material protocolo</string>
     <string name="events_screen_title">Eventos en curso</string>
+    <string name="regalos_button">Actualizar Regalos desde JSON Firebase</string>
+    <string name="material_button">Actualizar Material desde JSON Firebase</string>
+    <string name="eventos_button">Actualizar Eventos desde JSON Firebase</string>
+    <!-- GUESTS STRINGS -->
     <string name="guests_screen_title">Invitados</string>
     <string name="first_visit">1ª Visita</string>
     <string name="second_visit">2ª Visita</string>
@@ -32,10 +36,10 @@
     <string name="agape_deny">Sin entrada vino</string>
     <string name="guest_accessed">El invitado ha accedido</string>
     <string name="guest_not_accessed">El invitado no ha llegado</string>
-
-    <string name="regalos_button">Actualizar Regalos desde JSON Firebase</string>
-    <string name="material_button">Actualizar Material desde JSON Firebase</string>
-    <string name="eventos_button">Actualizar Eventos desde JSON Firebase</string>
+    <string name="guest_not_attend">El invitado no asistirá</string>
+    <string name="guest_access_btn">Actualizar acceso invitado</string>
+    <string name="guest_attend_btn">No asistirá</string>
+    <!-- DIALOGS -->
     <string name="regalos_dialog_title">Eliminar y actualizar regalos</string>
     <string name="material_dialog_title">Eliminar y actualizar material</string>
     <string name="eventos_dialog_title">Eliminar y actualizar eventos</string>
