@@ -17,8 +17,8 @@ android {
         applicationId = "com.nuwandacreations.asuntosinstitucionalesinmemorial"
         minSdk = 25
         targetSdk = 36
-        versionCode = 5
-        versionName = "3"
+        versionCode = 6
+        versionName = "3.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
