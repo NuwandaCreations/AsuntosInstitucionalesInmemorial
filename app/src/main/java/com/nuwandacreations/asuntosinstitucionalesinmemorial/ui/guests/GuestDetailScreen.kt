@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -82,15 +82,6 @@ fun GuestDetailScreen(
                     .padding(padding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-//                LaunchedEffect(Unit) {
-//                    if (hasQrScanned) {
-//                        guestDetailViewModel.setGuestAccess(
-//                            event = event,
-//                            access = true,
-//                            isRelevo = isRelevo
-//                        )
-//                    }
-//                }
 
                 if (uiState.isDialogShown) {
                     CreateDialog(
@@ -172,10 +163,13 @@ fun GuestDetailScreen(
                         border = BorderStroke(1.5.dp, Color(0xFFEA580C).copy(alpha = 0.4f)),
                         modifier = Modifier
                             .padding(horizontal = 50.dp, vertical = 10.dp)
-                            .align(Alignment.CenterEnd),
+                            .align(Alignment.Center),
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(Icons.Default.Delete, contentDescription = null)
+                            Icon(
+                                painterResource(R.drawable.ic_person_off),
+                                contentDescription = null
+                            )
                             Text(stringResource(R.string.guest_attend_btn))
                         }
                     }
@@ -351,7 +345,8 @@ private fun CreateGuestTexts(
         textAlign = TextAlign.Center,
         color = when (accesed) {
             true -> colorResource(R.color.onSuccess)
-            else -> colorResource(R.color.onError)
+            false -> colorResource(R.color.onError)
+            else -> colorResource(R.color.onWarning)
         }
     )
 }

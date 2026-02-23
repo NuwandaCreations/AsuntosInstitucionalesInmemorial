@@ -31,15 +31,20 @@ class GuestDetailViewModel(
         try {
             if (isRelevo) {
                 viewModelScope.launch(Dispatchers.IO) {
-                    getGuestRelevoByIdFirestoreUseCase(event, guest).collect { invitadoRelevo ->
-                        if (invitadoRelevo.nombre.isNotEmpty()) {
-                            _uiState.update { it.copy(invitadoRelevo = invitadoRelevo) }
-                            if (hasQrScanned) {
-                                setGuestAccess(event, access = true, isRelevo = true)
+                    try {
+                        getGuestRelevoByIdFirestoreUseCase(event, guest).collect { invitadoRelevo ->
+                            if (invitadoRelevo.nombre.isNotEmpty()) {
+                                _uiState.update { it.copy(invitadoRelevo = invitadoRelevo) }
+                                if (hasQrScanned) {
+                                    setGuestAccess(event, access = true, isRelevo = true)
+                                }
+                            } else {
+                                _uiState.update { it.copy(emptyQrScan = true) }
                             }
-                        } else {
-                            _uiState.update { it.copy(emptyQrScan = true) }
                         }
+                    } catch (e: Exception) {
+                        _uiState.update { it.copy(emptyQrScan = true) }
+                        Log.e("GetGuestFirestore", ERROR_LOADING_GUEST, e)
                     }
                 }
             } else {
@@ -57,6 +62,7 @@ class GuestDetailViewModel(
                 }
             }
         } catch (e: Exception) {
+            _uiState.update { it.copy(emptyQrScan = true) }
             Log.e("GetGuestFirestore", ERROR_LOADING_GUEST, e)
         }
     }
