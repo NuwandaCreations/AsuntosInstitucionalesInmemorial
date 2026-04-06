@@ -45,3 +45,6 @@ fun hexToColorInt(hex: String): Int? {
         null
     }
 }
+
+fun String.toCamelCase(): String =
+    split(" ").joinToString("") { it.replaceFirstChar(Char::uppercaseChar) }

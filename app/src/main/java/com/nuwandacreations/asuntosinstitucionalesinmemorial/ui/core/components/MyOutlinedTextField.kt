@@ -11,7 +11,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun MyOutlinedTextField(value: String, onValueChange: (String) -> Unit, label: String) {
+fun MyOutlinedTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    minLines: Int = 1,
+    maxLines: Int = 1
+) {
     OutlinedTextField(
         value = value,
         onValueChange = { onValueChange(it) },
@@ -26,6 +32,8 @@ fun MyOutlinedTextField(value: String, onValueChange: (String) -> Unit, label: S
             unfocusedTextColor = Color.White,
             focusedLabelColor = Color.White,
             unfocusedLabelColor = Color.White
-        )
+        ),
+        minLines = minLines,
+        maxLines = maxLines
     )
 }
