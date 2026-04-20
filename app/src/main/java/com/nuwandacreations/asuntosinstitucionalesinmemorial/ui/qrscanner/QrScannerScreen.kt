@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -64,13 +65,6 @@ import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Comp
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.ERROR_SCANNING_QR
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.ERROR_STARTING_CAMERA
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.ERROR_UNBINDING_CAMERA
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.OPEN_SETTINGS
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.PERMISSION_ACCEPT
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.PERMISSION_APP_NECESARY
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.PERMISSION_DENY
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.PERMISSION_FROM_SETTINGS
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.PERMISSION_NECESARY
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.QR_SCANNER_TITTLE
 import java.nio.charset.Charset
 import java.util.concurrent.Executors
 
@@ -94,7 +88,7 @@ fun QrScannerScreen(
                     TopAppBar(
                         title = {
                             Text(
-                                QR_SCANNER_TITTLE,
+                                stringResource(R.string.qr_scanner_tittle),
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(start = 50.dp),
                                 color = colorResource(R.color.onPrimary)
@@ -304,17 +298,17 @@ fun PermissionRationale(onRequestPermission: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = PERMISSION_NECESARY,
+            text = stringResource(R.string.permission_necesary),
             style = MaterialTheme.typography.headlineSmall
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = PERMISSION_APP_NECESARY,
+            text = stringResource(R.string.permission_app_necesary),
             style = MaterialTheme.typography.bodyMedium
         )
         Spacer(modifier = Modifier.height(24.dp))
         Button(onClick = onRequestPermission) {
-            Text(PERMISSION_ACCEPT)
+            Text(stringResource(R.string.permission_accept))
         }
     }
 }
@@ -337,18 +331,18 @@ fun PermissionPermanentlyDenied(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = PERMISSION_DENY,
+            text = stringResource(R.string.permission_deny),
             style = MaterialTheme.typography.headlineSmall
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = PERMISSION_FROM_SETTINGS,
+            text = stringResource(R.string.permission_from_settings),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(24.dp))
         Button(onClick = onOpenSettings) {
-            Text(OPEN_SETTINGS)
+            Text(stringResource(R.string.open_settings))
         }
         Spacer(modifier = Modifier.height(8.dp))
         TextButton(onClick = onCancel) {

@@ -27,9 +27,6 @@ import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyButton
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyProgressIndicator
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.theme.Typography
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.DETAIL_EVENT_DELETE_BTN
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.DETAIL_EVENT_GENERATE_QR_BTN
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.DETAIL_EVENT_GUEST_BTN
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -39,7 +36,6 @@ fun EventDetailScreen(
     navigateBack: () -> Unit
 ) {
     val uiState by eventsViewModel.uiState.collectAsState()
-    val scrollState = rememberScrollState()
     val context = LocalContext.current
 
     LaunchedEffect(key1 = Unit) {
@@ -104,7 +100,7 @@ fun EventDetailScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
+                .verticalScroll(rememberScrollState())
                 .padding(padding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -145,19 +141,19 @@ fun EventDetailScreen(
                     textAlign = TextAlign.Justify,
                     color = Color.White
                 )
-                MyButton(text = DETAIL_EVENT_GUEST_BTN) {
+                MyButton(text = stringResource(R.string.detail_event_guest_btn)) {
                     eventsViewModel.apply {
                         updateDialogType(DialogType.SET_GUEST)
                         showDialog(true)
                     }
                 }
-                MyButton(text = DETAIL_EVENT_DELETE_BTN) {
+                MyButton(text = stringResource(R.string.detail_event_delete_btn)) {
                     eventsViewModel.apply {
                         updateDialogType(DialogType.DELETE_EVENT)
                         showDialog(true)
                     }
                 }
-                MyButton(text = DETAIL_EVENT_GENERATE_QR_BTN) {
+                MyButton(text = stringResource(R.string.detail_event_generate_qr_btn)) {
                     eventsViewModel.apply {
                         updateDialogType(DialogType.GENERATE_QR)
                         showDialog(true)

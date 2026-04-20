@@ -28,30 +28,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.google.firebase.Timestamp
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.R
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyButton
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyDatePicker
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyOutlinedTextField
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyProgressIndicator
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyRadioButton
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MySnackbar
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MySpacer
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.core.components.MyProgressIndicator
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.theme.Typography
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.AFIRMATIVE
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.EVENT_BUTTON
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.EVENT_DATE
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.EVENT_ID
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.EVENT_IS_RELEVO_GUARDIA
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.EVENT_NAME
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.EVENT_PLACE
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.EVENT_SCREEN_TITTLE
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.ERROR_COMPLETING_EVENT
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.ERROR_CREATING_EVENT
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.NEGATIVE
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.timestampToDate
 import org.koin.compose.viewmodel.koinViewModel
-import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +53,6 @@ fun CreateEventScreen(
     navigateBack: () -> Unit
 ) {
     val uiState by createEventViewModel.uiState.collectAsState()
-    val scrollState = rememberScrollState()
 
     val datePickerState = if (uiState.isInputMode) rememberDatePickerState(
         initialDisplayMode = DisplayMode.Input,
@@ -74,12 +66,12 @@ fun CreateEventScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
+                .verticalScroll(rememberScrollState())
                 .padding(padding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = EVENT_SCREEN_TITTLE,
+                text = stringResource(R.string.event_screen_tittle),
                 modifier = Modifier.padding(horizontal = 15.dp),
                 style = Typography.titleMedium,
                 textAlign = TextAlign.Center
@@ -89,8 +81,7 @@ fun CreateEventScreen(
                     datePickerState,
                     onDismiss = { createEventViewModel.showDatePicker(false) },
                     onConfirm = {
-                        val dateEvent = timestampToDate(Timestamp(Date(it)))
-                        createEventViewModel.updateEventState(date = dateEvent)
+                        createEventViewModel.updateEventState(eventDate = it)
                         createEventViewModel.showDatePicker(false)
                     }
                 )
@@ -99,13 +90,7 @@ fun CreateEventScreen(
             MyOutlinedTextField(
                 uiState.event?.nombre ?: "",
                 { createEventViewModel.updateEventState(name = it) },
-                EVENT_NAME
-            )
-            MySpacer(height = 20)
-            MyOutlinedTextField(
-                uiState.event?.id ?: "",
-                { createEventViewModel.updateEventState(id = it) },
-                EVENT_ID
+                stringResource(R.string.event_name)
             )
             MySpacer(height = 20)
             Row(
@@ -119,7 +104,7 @@ fun CreateEventScreen(
                     onValueChange = { },
                     readOnly = true,
                     enabled = false,
-                    label = { Text(EVENT_DATE) },
+                    label = { Text(stringResource(R.string.event_date)) },
                     modifier = Modifier.clickable {
                         createEventViewModel.apply {
                             inputMode(true)
@@ -156,11 +141,19 @@ fun CreateEventScreen(
             MyOutlinedTextField(
                 uiState.event?.lugar ?: "",
                 { createEventViewModel.updateEventState(place = it) },
-                EVENT_PLACE
+                stringResource(R.string.event_place)
+            )
+            MySpacer(height = 20)
+            MyOutlinedTextField(
+                value = uiState.event?.descripcion ?: "",
+                onValueChange = { createEventViewModel.updateEventState(description = it) },
+                label = stringResource(R.string.event_description),
+                minLines = 3,
+                maxLines = 3
             )
             MySpacer(height = 20)
             Text(
-                text = EVENT_IS_RELEVO_GUARDIA,
+                text = stringResource(R.string.event_is_relevo_guardia),
                 modifier = Modifier.padding(horizontal = 15.dp),
                 color = Color.White,
                 textAlign = TextAlign.Center
@@ -175,7 +168,7 @@ fun CreateEventScreen(
                 }
             }
             MySpacer(height = 20)
-            MyButton(text = EVENT_BUTTON) {
+            MyButton(text = stringResource(R.string.event_button)) {
                 uiState.event?.let {
                     createEventViewModel.setEventFirestore(
                         it,
@@ -196,7 +189,7 @@ fun CreateEventScreen(
                 contentAlignment = Alignment.BottomCenter
             ) {
                 MySnackbar(
-                    text = "Complete los campos para crear el evento",
+                    text = if (uiState.errorType == CreateEventError.INCOMPLETE) ERROR_COMPLETING_EVENT else ERROR_CREATING_EVENT,
                     color = R.color.onError
                 )
             }

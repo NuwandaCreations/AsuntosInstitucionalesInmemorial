@@ -40,6 +40,27 @@
     <string name="guest_not_attend">El invitado no asistirá</string>
     <string name="guest_access_btn">Actualizar acceso invitado</string>
     <string name="guest_attend_btn">No asistirá</string>
+    <!-- EVENTS -->
+    <string name="detail_event_guest_btn">Subir invitados desde JSON</string>
+    <string name="detail_event_delete_btn">Eliminar evento</string>
+    <string name="detail_event_generate_qr_btn">Generar invitaciones del evento</string>
+    <string name="event_id">Id del evento</string>
+    <string name="event_name">Nombre del evento</string>
+    <string name="event_date">Fecha del evento</string>
+    <string name="event_place">Lugar del evento</string>
+    <string name="event_is_relevo_guardia">¿Es un Relevo de Guardia?</string>
+    <string name="event_description">Descripción (opcional)</string>
+    <string name="event_button">Crear evento</string>
+    <string name="event_screen_tittle">Nuevo evento</string>
+    <!-- QRSCANNER -->
+    <string name="scanner_btn">scanner</string>
+    <string name="qr_scanner_tittle">Escanea el código QR</string>
+    <string name="permission_necesary">Permiso de cámara necesario</string>
+    <string name="permission_app_necesary">Esta app necesita acceso a la cámara para escanear códigos QR.</string>
+    <string name="permission_accept">Conceder permiso</string>
+    <string name="permission_deny">Permiso denegado</string>
+    <string name="permission_from_settings">Has denegado el permiso de cámara. Para usar el escáner QR, debes habilitarlo en la configuración de la app.</string>
+    <string name="open_settings">Abrir configuración</string>
     <!-- DIALOGS -->
     <string name="regalos_dialog_title">Eliminar y actualizar regalos</string>
     <string name="material_dialog_title">Eliminar y actualizar material</string>

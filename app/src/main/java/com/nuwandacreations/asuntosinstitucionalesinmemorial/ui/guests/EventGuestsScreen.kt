@@ -53,7 +53,6 @@ import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.events.EventsVie
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.theme.Typography
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.AFIRMATIVE
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.NEGATIVE
-import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.SCANNER
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.hexToColorInt
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -93,7 +92,7 @@ fun EventGuestsScreen(
                         contentDescription = null,
                         modifier = Modifier.size(50.dp)
                     )
-                    Text(text = SCANNER)
+                    Text(text = stringResource(R.string.scanner_btn))
                 }
             }
         }
