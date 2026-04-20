@@ -13,6 +13,7 @@ import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.events.CreateEve
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.events.EventDetailScreen
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.events.EventsScreen
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.guests.EventGuestsScreen
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.guests.GuestCountAccessedScreen
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.guests.GuestDetailScreen
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.home.ButtonAction
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.home.HomeScreen
@@ -68,7 +69,7 @@ fun NavigationWrapper() {
                 EventsScreen(
                     goToEventDetail = { navController.navigate(EventDetail(event = it)) },
                     goToEventGuests = { event, isRelevo ->
-                        navController.navigate(EventGuests(event = event, esRelevo = isRelevo))
+                        navController.navigate(EventGuests(event = event, isRelevo = isRelevo))
                     },
                     goToCreateEvent = { navController.navigate(CreateEvent) }
                 )
@@ -86,28 +87,50 @@ fun NavigationWrapper() {
                 )
             }
             composable<EventGuests> { navBackStackEntry ->
-                val event = navBackStackEntry.toRoute<EventGuests>()
+                val entry = navBackStackEntry.toRoute<EventGuests>()
                 EventGuestsScreen(
-                    event = event.event,
+                    event = entry.event,
                     goToQrScanner = {
                         navController.navigate(
                             QrScanner(
-                                event = event.event,
-                                esRelevo = event.esRelevo
+                                event = entry.event,
+                                isRelevo = entry.isRelevo
                             )
                         )
                     },
                     goToGuestDetail = {
                         navController.navigate(
                             GuestDetail(
-                                event = event.event,
+                                event = entry.event,
                                 guest = it,
-                                isRelevo = event.esRelevo,
+                                isRelevo = entry.isRelevo,
                                 hasQrScanned = false
                             )
                         )
                     },
-                    isRelevoGuardia = event.esRelevo
+                    goToGuestCountAccessed = { event, isRelevo ->
+                        navController.navigate(
+                            GuestCountAccessed(event = event, isRelevo = isRelevo)
+                        )
+                    },
+                    isRelevoGuardia = entry.isRelevo,
+                    filterGuestsByGroup = entry.filterGuestsByGroup
+                )
+            }
+            composable<GuestCountAccessed> { navBackStackEntry ->
+                val entry = navBackStackEntry.toRoute<GuestCountAccessed>()
+                GuestCountAccessedScreen(
+                    event = entry.event,
+                    goToEventGuestsScreen = { event, isRelevo, group ->
+                        navController.navigate(
+                            EventGuests(
+                                event = event,
+                                isRelevo = isRelevo,
+                                filterGuestsByGroup = group
+                            )
+                        )
+                    },
+                    isRelevoGuardia = entry.isRelevo
                 )
             }
             composable<QrScanner> { navBackStackEntry ->
@@ -119,7 +142,7 @@ fun NavigationWrapper() {
                             GuestDetail(
                                 event = event.event,
                                 guest = it,
-                                isRelevo = event.esRelevo,
+                                isRelevo = event.isRelevo,
                                 hasQrScanned = true
                             )
                         )

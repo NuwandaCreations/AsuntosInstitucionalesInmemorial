@@ -3,6 +3,7 @@ package com.nuwandacreations.asuntosinstitucionalesinmemorial.ui.guests
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +31,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,16 +61,20 @@ fun EventGuestsScreen(
     eventsViewModel: EventsViewModel = koinViewModel(),
     goToGuestDetail: (String) -> Unit,
     goToQrScanner: () -> Unit,
+    goToGuestCountAccessed: (String, Boolean) -> Unit,
     event: String,
-    isRelevoGuardia: Boolean = false
+    isRelevoGuardia: Boolean = false,
+    filterGuestsByGroup: String = ""
 ) {
     val uiState by eventsViewModel.uiState.collectAsState()
     var searchText by rememberSaveable { mutableStateOf("") }
     var expandedMenu by rememberSaveable { mutableStateOf(false) }
-    var categoriaMenu by rememberSaveable { mutableStateOf("Todos") }
+    var categoriaMenu by rememberSaveable { mutableStateOf(filterGuestsByGroup.ifEmpty { "Todos" }) }
 
-    eventsViewModel.getEventGuests(event = event, esRelevoGuardia = isRelevoGuardia)
-    eventsViewModel.getGuestsPhotos()
+    LaunchedEffect(Unit) {
+        eventsViewModel.getEventGuests(event = event, esRelevoGuardia = isRelevoGuardia)
+        eventsViewModel.getGuestsPhotos()
+    }
 
     Scaffold(
         containerColor = colorResource(R.color.onPrimaryBackground),
@@ -135,7 +141,11 @@ fun EventGuestsScreen(
             }
             Text(
                 text = stringResource(R.string.guests_screen_title),
-                modifier = Modifier.padding(top = 10.dp),
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .clickable {
+                        goToGuestCountAccessed(event, isRelevoGuardia)
+                    },
                 style = Typography.titleMedium
             )
 
