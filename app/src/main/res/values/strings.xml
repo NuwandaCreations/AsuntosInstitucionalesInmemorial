@@ -26,6 +26,7 @@
     <string name="eventos_button">Actualizar Eventos desde JSON Firebase</string>
     <!-- GUESTS STRINGS -->
     <string name="guests_screen_title">Invitados</string>
+    <string name="guests_accessed_screen_title">Invitados identificados</string>
     <string name="first_visit">1ª Visita</string>
     <string name="second_visit">2ª Visita</string>
     <string name="no_visit">Sin visita</string>

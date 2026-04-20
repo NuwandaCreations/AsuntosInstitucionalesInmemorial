@@ -49,12 +49,17 @@ object CreateEvent : AppScreen {
 }
 
 @Serializable
-data class EventGuests(val event: String, val esRelevo: Boolean) : AppScreen {
+data class EventGuests(val event: String, val isRelevo: Boolean, val filterGuestsByGroup: String = "") : AppScreen {
     override val route = "EventGuests"
 }
 
 @Serializable
-data class QrScanner(val event: String, val esRelevo: Boolean) : AppScreen {
+data class GuestCountAccessed(val event: String, val isRelevo: Boolean) : AppScreen {
+    override val route = "GuestCountAccessed"
+}
+
+@Serializable
+data class QrScanner(val event: String, val isRelevo: Boolean) : AppScreen {
     override val route = "QrScanner"
 }
 
