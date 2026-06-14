@@ -65,6 +65,7 @@ val viewModelModule = module {
     }
     viewModel {
         CreateEventViewModel(
+            get(),
             get()
         )
     }

@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.model.Evento
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.DeleteEventFirestoreUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.domain.usecases.eventsusecases.firestore.SetEventFirestoreUseCase
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.ERROR_UPDATING_EVENT
+import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.Constants.Companion.RELEVO_ID
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.timestampToDate
 import com.nuwandacreations.asuntosinstitucionalesinmemorial.util.toCamelCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +19,7 @@ import java.util.Date
 
 class CreateEventViewModel(
     val setEventFirestoreUseCase: SetEventFirestoreUseCase,
+    val deleteEventFirestoreUseCase: DeleteEventFirestoreUseCase
 ) : ViewModel() {
     val _uiState = MutableStateFlow(CreateEventUiState())
     val uiState: StateFlow<CreateEventUiState> = _uiState
@@ -33,6 +36,10 @@ class CreateEventViewModel(
                     _uiState.update { it.copy(errorType = CreateEventError.INCOMPLETE) }
                     onError()
                 } else {
+                    if (event.esRelevoGuardia) {
+                        deleteEventFirestoreUseCase(RELEVO_ID)
+                        event.id = RELEVO_ID
+                    }
                     setEventFirestoreUseCase(event)
                     onSucces()
                 }

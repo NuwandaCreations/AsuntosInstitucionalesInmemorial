@@ -171,7 +171,7 @@ fun CreateEventScreen(
             MyButton(text = stringResource(R.string.event_button)) {
                 uiState.event?.let {
                     createEventViewModel.setEventFirestore(
-                        it,
+                        event = it,
                         onSucces = { navigateBack() },
                         onError = { createEventViewModel.showError(true) }
                     )
