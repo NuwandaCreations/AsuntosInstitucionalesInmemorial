@@ -7,6 +7,7 @@ class Constants {
         const val REGALOS = "regalos"
         const val MATERIAL = "material"
         const val EVENTOS = "eventos"
+        const val RELEVO_ID = "RelevoDeLaGuardia"
         const val STORAGE = "storage"
         const val GUESTS = "invitados"
         const val REGALOS_JSON = "0-otros/regalos.json"

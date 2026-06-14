@@ -3,6 +3,7 @@ package com.nuwandacreations.asuntosinstitucionalesinmemorial.data
 import android.util.Log
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ListResult
@@ -217,7 +218,23 @@ class FirebaseRepositoryImpl(
     }
 
     override suspend fun deleteEventFirestore(eventId: String) {
-        firestore.collection(EVENTOS).document(eventId).delete()
+        deleteEventGuestsFirestore(eventId)
+        firestore.collection(EVENTOS).document(eventId).delete().await()
+    }
+
+    private suspend fun deleteEventGuestsFirestore(eventId: String) {
+        val guestsSnapshot = firestore
+            .collection(EVENTOS)
+            .document(eventId)
+            .collection(GUESTS)
+            .get(Source.SERVER)
+            .await()
+
+        val batch = firestore.batch()
+        guestsSnapshot.documents.forEach { guest ->
+            batch.delete(guest.reference)
+        }
+        batch.commit().await()
     }
 
     override suspend fun updateRegalosFirestore(regalosList: List<Regalos>) {
